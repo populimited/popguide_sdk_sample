@@ -12,6 +12,9 @@ import _SwiftConcurrencyShims
 public protocol LocalFileCheckable {
   var file: Swift.String? { get }
 }
+extension PopguideSDK.LocalFileCheckable {
+  public func localFile(mapDetailUID: Swift.String) -> Foundation.URL?
+}
 extension PopguideSDK.AudioServer : PopguideSDK.LocalFileCheckable {
 }
 extension PopguideSDK.ClusterPointIconServer : PopguideSDK.LocalFileCheckable {
@@ -19,6 +22,8 @@ extension PopguideSDK.ClusterPointIconServer : PopguideSDK.LocalFileCheckable {
 extension PopguideSDK.IconServer : PopguideSDK.LocalFileCheckable {
 }
 extension PopguideSDK.ImageServer : PopguideSDK.LocalFileCheckable {
+}
+extension PopguideSDK.VideoServer : PopguideSDK.LocalFileCheckable {
 }
 public typealias PopguideAccount = PopguideSDK.ApiResponseLogin
 final public class PopguideManager : Combine.ObservableObject {
@@ -735,7 +740,7 @@ public struct UnityPointServer : Swift.Codable {
 public struct VideoServer : Swift.Codable {
   public let id: Swift.Int?
   public let pos: Swift.Int?
-  public let remoteUrl: Swift.String?
+  public let file: Swift.String?
   public let name: Swift.String?
   public let type: Swift.String?
   public let title: Swift.String?

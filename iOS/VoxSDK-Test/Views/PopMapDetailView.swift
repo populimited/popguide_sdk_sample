@@ -8,6 +8,17 @@ import NukeUI
 import PopguideSDK
 import SwiftUI
 
+extension PointServer: Identifiable {}
+
+struct LocalFile: Identifiable, Hashable {
+  let id = UUID()
+  let path: String
+  
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(path)
+  }
+}
+
 struct PopMapDetailView: View {
   
   // MARK: - Stored Properties
@@ -20,16 +31,18 @@ struct PopMapDetailView: View {
   @State private var progress: Double?
   @State private var isInstalled = false
   @State private var cancellables = Set<AnyCancellable>()
+  @State private var localFilesPath = [LocalFile]()
   
   // MARK: - Environment
   
   @EnvironmentObject private var popguideManager: PopguideManager
+  @EnvironmentObject private var coordinator: Coordinator
   
   var body: some View {
     ZStack {
       Color.white.ignoresSafeArea()
       
-      VStack(alignment: .leading, spacing: 24) {
+      VStack(alignment: .leading, spacing: 16) {
         if let coverPictureUrl = popMap.coverPicture {
           LazyImage(url: URL(string: coverPictureUrl)) { state in
             if let image = state.image {
@@ -38,7 +51,7 @@ struct PopMapDetailView: View {
                 .scaledToFill()
                 .frame(
                   width: UIScreen.main.bounds.width,
-                  height: UIScreen.main.bounds.height * 0.20
+                  height: UIScreen.main.bounds.height * 0.18
                 )
                 .clipped()
             } else {
@@ -84,12 +97,47 @@ struct PopMapDetailView: View {
         }
         .padding(.horizontal)
         
+        if isInstalled {
+          List(localFilesPath) { file in
+            Text(file.path)
+              .font(.footnote)
+              .foregroundStyle(.black)
+              .frame(maxWidth: .infinity, alignment: .leading)
+              .padding(12)
+              .background(Color.white)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
+              .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 0)
+              .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                  .stroke(.gray.opacity(0.2), lineWidth: 1)
+              )
+              .buttonStyle(PlainButtonStyle())
+              .listRowSeparator(.hidden)
+          }
+          .listStyle(.plain)
+        }
+        
         Spacer()
       }
     }
     .task {
       await fetchPopMapDetail(languageId: languageId)
       isInstalled = isMapInstalled()
+    }
+    .onChange(of: isInstalled) { newValue in
+      guard
+        let levels = mapDetail?.levels,
+        newValue
+      else {
+        localFilesPath = []
+        return
+      }
+      localFilesPath = levels.reduce(into: [LocalFile]()) { partialResult, level in
+        partialResult += level.points?.reduce(into: [LocalFile]()) { partialResult, point in
+          partialResult += getPointLocalFiels(point)
+        } ?? []
+      }
+      print(localFilesPath.count)
     }
   }
   
@@ -147,5 +195,28 @@ struct PopMapDetailView: View {
     guard let mapDetail else { return }
     popguideManager.deletePopMap(mapDetail)
     isInstalled = false
+  }
+  
+  private func getPointLocalFiels(_ point: PointServer) -> [LocalFile] {
+    guard let mapUID = mapDetail?.uid else { return [] }
+    var files = [LocalFile]()
+    
+    files += point.contents?.images?.compactMap {
+      guard let url = $0.localFile(mapDetailUID: mapUID) else { return nil }
+      return LocalFile(path: url.absoluteString)
+    } ?? []
+    
+    files += point.contents?.videos?.compactMap {
+      guard let url = $0.localFile(mapDetailUID: mapUID) else { return nil }
+      return LocalFile(path: url.absoluteString)
+    } ?? []
+    
+    files += point.contents?.audios?.compactMap {
+      guard let url = $0.localFile(mapDetailUID: mapUID) else { return nil }
+      return LocalFile(path: url.absoluteString)
+    } ?? []
+    
+    // Apply set to remove duplciates
+    return Array(Set(files))
   }
 }

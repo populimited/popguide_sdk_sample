@@ -106,6 +106,45 @@
                 "accessorKind": "get"
               }
             ]
+          },
+          {
+            "kind": "Function",
+            "name": "localFile",
+            "printedName": "localFile(mapDetailUID:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Foundation.URL?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "URL",
+                    "printedName": "Foundation.URL",
+                    "usr": "s:10Foundation3URLV"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11PopguideSDK18LocalFileCheckablePAAE05localD012mapDetailUID10Foundation3URLVSgSS_tF",
+            "mangledName": "$s11PopguideSDK18LocalFileCheckablePAAE05localD012mapDetailUID10Foundation3URLVSgSS_tF",
+            "moduleName": "PopguideSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : PopguideSDK.LocalFileCheckable>",
+            "sugared_genericSig": "<Self where Self : PopguideSDK.LocalFileCheckable>",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Protocol",
@@ -35402,8 +35441,8 @@
           },
           {
             "kind": "Var",
-            "name": "remoteUrl",
-            "printedName": "remoteUrl",
+            "name": "file",
+            "printedName": "file",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -35421,8 +35460,8 @@
               }
             ],
             "declKind": "Var",
-            "usr": "s:11PopguideSDK11VideoServerV9remoteUrlSSSgvp",
-            "mangledName": "$s11PopguideSDK11VideoServerV9remoteUrlSSSgvp",
+            "usr": "s:11PopguideSDK11VideoServerV4fileSSSgvp",
+            "mangledName": "$s11PopguideSDK11VideoServerV4fileSSSgvp",
             "moduleName": "PopguideSDK",
             "declAttributes": [
               "HasStorage",
@@ -35452,8 +35491,8 @@
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:11PopguideSDK11VideoServerV9remoteUrlSSSgvg",
-                "mangledName": "$s11PopguideSDK11VideoServerV9remoteUrlSSSgvg",
+                "usr": "s:11PopguideSDK11VideoServerV4fileSSSgvg",
+                "mangledName": "$s11PopguideSDK11VideoServerV4fileSSSgvg",
                 "moduleName": "PopguideSDK",
                 "implicit": true,
                 "accessorKind": "get"
@@ -35921,6 +35960,13 @@
             "printedName": "Encodable",
             "usr": "s:SE",
             "mangledName": "$sSE"
+          },
+          {
+            "kind": "Conformance",
+            "name": "LocalFileCheckable",
+            "printedName": "LocalFileCheckable",
+            "usr": "s:11PopguideSDK18LocalFileCheckableP",
+            "mangledName": "$s11PopguideSDK18LocalFileCheckableP"
           }
         ]
       },
@@ -48111,56 +48157,56 @@
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 384,
+      "offset": 374,
       "length": 12,
       "value": "\"remote_url\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 460,
+      "offset": 450,
       "length": 11,
       "value": "\"file_size\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 492,
+      "offset": 482,
       "length": 11,
       "value": "\"mime_type\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 384,
+      "offset": 374,
       "length": 12,
       "value": "\"remote_url\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 460,
+      "offset": 450,
       "length": 11,
       "value": "\"file_size\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "StringLiteral",
-      "offset": 492,
+      "offset": 482,
       "length": 11,
       "value": "\"mime_type\""
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "IntegerLiteral",
-      "offset": 553,
+      "offset": 543,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/valerio\/Projects\/vox\/VoxSDK\/VoxSDK\/Sources\/PopguideSDK\/Utils\/VoxNetwork\/Models\/Response\/PopMapDetails\/VideoServer.swift",
       "kind": "IntegerLiteral",
-      "offset": 636,
+      "offset": 626,
       "length": 1,
       "value": "0"
     },
