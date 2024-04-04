@@ -249,14 +249,14 @@ class MainActivity : ComponentActivity() {
                 val files = mutableListOf<File>().apply {
                     add(
                         sdk.fetchLocalFile(
-                            popMapDetailsServer,
-                            popMapDetailsServer.header?.audio?.file.orEmpty()
+                            uid = popMapDetailsServer.uid.orEmpty(),
+                            anyUrl = popMapDetailsServer.header?.audio?.file.orEmpty()
                         )
                     )
                     add(
                         sdk.fetchLocalFile(
-                            popMapDetailsServer,
-                            popMapDetailsServer.header?.image?.file.orEmpty()
+                            uid = popMapDetailsServer.uid.orEmpty(),
+                            anyUrl = popMapDetailsServer.header?.image?.file.orEmpty()
                         )
 
                     )
@@ -264,7 +264,12 @@ class MainActivity : ComponentActivity() {
                         .flatMap { it.points.orEmpty() }
                         .flatMap { it.contents?.audios.orEmpty() }
                         .filter { it.file != null }
-                        .map { sdk.fetchLocalFile(popMapDetailsServer, it.file!!) })
+                        .map {
+                            sdk.fetchLocalFile(
+                                uid = popMapDetailsServer.uid.orEmpty(),
+                                anyUrl = it.file!!
+                            )
+                        })
                 }
 
                 // Updates UI for downloaded state

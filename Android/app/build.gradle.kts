@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation("com.vox.populi:sdk:1.0.13")
+    implementation("com.vox.populi:sdk:1.1.1")
 
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.core:core-ktx:1.12.0")
