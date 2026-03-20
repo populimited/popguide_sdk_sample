@@ -2,6 +2,7 @@ package io.populi.sdkapp
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import io.populi.sdk.PopuliSdk
 import io.populi.sdk.download.DownloadState
 import io.populi.sdk.download.DownloadStatus
-import io.populi.sdk.server.model.response.detailsResponse.model.PopMapDetailsServer
+import io.populi.sdk.server.model.response.detailsResponse.PopMapDetailsServer
 import io.populi.sdkapp.components.AccountInfo
 import io.populi.sdkapp.components.CredentialsInfo
 import io.populi.sdkapp.components.PopMapInfoDetails
@@ -44,8 +45,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.Locale
-import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
 
@@ -53,15 +52,22 @@ class MainActivity : ComponentActivity() {
         PopuliSdk.Builder()
             .setAppContext(this.applicationContext)
             .setAppName("popguide")
-            .setLanguage(Locale.getDefault().language)
             .setIsStaging(false)
             .setIsDebug(true)
+            .setApiAppVersion("120")
+            .setUserAgent(
+                appName = "test",
+                versionName = "test",
+                versionCode = "test",
+                deviceOS = "test",
+                deviceModel = "test"
+            )
             .build()
     }
-    private val userName = "POP-000312"
-    private val passCode = "98741"
-//    private val userName = "MLQ-000002"
-//    private val passCode = "43672"
+
+    //     Default credentials
+    private val userName = "POP-001600"
+    private val passCode = "93043"
 
     private val accountUiState = mutableStateOf<AccountInfo?>(null)
     private val popmapInfoListUiState = mutableStateOf<List<PopMapInfo>>(emptyList())
@@ -70,7 +76,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val account by accountUiState
             val popmaps by popmapInfoListUiState
@@ -153,16 +158,28 @@ class MainActivity : ComponentActivity() {
     // Retrieves and updates details of the selected pop map
     private fun choosePopmapInfo(popMap: PopMapInfo, lang: LangPackInfo) {
         sdkScope.launch {
-            // Fetches pop map details from the server
+            val accountInfo = accountUiState.value
+            // Fetches pop map details from the server or local
             val popMapDetails =
-                sdk.fetchPopMapDetails(id = popMap.id, languageId = lang.id)
+                try {
+                    sdk.fetchLocalPopMapDetails(popMap.uid, lang.id)
+                } catch (e: Exception) {
+                    sdk.fetchPopMapDetailsServer(
+                        accountId = accountInfo?.id ?: -1,
+                        groupId = accountInfo?.groupId ?: -1,
+                        popMapId = popMap.id,
+                        languageId = lang.id,
+                        version = popMap.version
+                    )
+                }
             // Updates UI state with the retrieved pop map details
             popmapDetailsInfoUiState.value = PopmapDetailsInfo(
                 id = popMapDetails.id ?: throw IllegalStateException("id is null"),
                 uid = popMapDetails.uid!!,
                 langId = popMapDetails.language_id!!,
                 name = popMapDetails.name!!,
-                picture = popMapDetails.header?.image?.file.orEmpty()
+                picture = popMapDetails.header?.image?.file.orEmpty(),
+                version = popMapDetails.version.orEmpty()
             )
 
             // Fetches download status for the retrieved pop map details
@@ -178,7 +195,7 @@ class MainActivity : ComponentActivity() {
         sdkScope.launch {
             handleError {
                 // Fetches account information from the server
-                val loginResponse = sdk.fetchAccount(userName, passCode)
+                val loginResponse = sdk.fetchAccount(username = userName, password = passCode)
 
                 // Retrieves account information from the login response
                 val account = loginResponse.account ?: throw IllegalStateException("No accounts")
@@ -187,6 +204,19 @@ class MainActivity : ComponentActivity() {
                 // Retrieves pop maps associated with the account from the login response
                 val popmaps = loginResponse.pop_maps ?: throw IllegalStateException("No popmaps")
                 popmapInfoListUiState.value = createPopMapInfoList(popmaps)
+
+                val starpoints =
+                    sdk.fetchStarPoints(accountId = account.id, groupId = account.group_id)
+                val adverts =
+                    sdk.fetchAdvertSpots(accountId = account.id, groupId = account.group_id)
+
+                val style = sdk.fetchMapStyle(accountId = account.id, groupId = account.group_id)
+
+                val marketPlaces = sdk.fetchMarketPlaces(
+                    accountId = account.id,
+                    groupId = account.group_id,
+                    languageId = 1
+                )
             }
         }
     }
@@ -195,12 +225,19 @@ class MainActivity : ComponentActivity() {
     private fun downloadPopMapDetails(info: PopmapDetailsInfo) {
         sdkScope.launch {
             handleError {
-                // Fetches pop map details from the server (local copy if available)
+                val accountInfo = accountUiState.value
+                // Fetches pop map details from the server or local
                 val popMapDetails =
                     try {
-                        sdk.fetchLocalPopMapDetails(info.uid)
+                        sdk.fetchLocalPopMapDetails(info.uid, info.langId)
                     } catch (e: Exception) {
-                        sdk.fetchPopMapDetails(id = info.id, languageId = info.langId)
+                        sdk.fetchPopMapDetailsServer(
+                            accountId = accountInfo?.id ?: -1,
+                            groupId = accountInfo?.groupId ?: -1,
+                            popMapId = info.id,
+                            languageId = info.langId,
+                            version = info.version
+                        )
                     }
                 // Fetches downloadables associated with the pop map details
                 sdk.fetchPopMapDownloadables(popMapDetailsServer = popMapDetails) { status ->
@@ -216,22 +253,17 @@ class MainActivity : ComponentActivity() {
         popMapDetailsServer: PopMapDetailsServer,
         status: DownloadStatus
     ) {
+        if (popMapDetailsServer.uid != status.uid) return
         val downloadedSize = status.downloadedSize
         val sizeToDownload = status.sizeToDownload
         val downloadState = status.downloadState
 
         // Calculates download percentage
-        val percentage = if (sizeToDownload == 0L) {
-            100
-        } else {
-            ((downloadedSize.toFloat()
-                .div(downloadedSize + sizeToDownload)).times(100)).roundToInt()
-        }
+        val percentage = status.getPercentage()
 
         // Updates UI based on download state
         when (downloadState) {
-            DownloadState.DOWNLOADING_LIGHT,
-            DownloadState.DOWNLOADING_FULL -> {
+            DownloadState.DOWNLOADING -> {
                 // Updates UI for downloading state
                 popmapDetailsInfoUiState.value?.copy(
                     percentage = percentage,
@@ -243,6 +275,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            DownloadState.NEED_UPDATE,
             DownloadState.DOWNLOADED_LIGHT,
             DownloadState.DOWNLOADED_FULL -> {
                 // Retrieves downloaded files and updates UI
@@ -260,16 +293,17 @@ class MainActivity : ComponentActivity() {
                         )
 
                     )
-                    addAll(popMapDetailsServer.levels.orEmpty()
-                        .flatMap { it.points.orEmpty() }
-                        .flatMap { it.contents?.audios.orEmpty() }
-                        .filter { it.file != null }
-                        .map {
-                            sdk.fetchLocalFile(
-                                uid = popMapDetailsServer.uid.orEmpty(),
-                                anyUrl = it.file!!
-                            )
-                        })
+                    addAll(
+                        popMapDetailsServer.levels.orEmpty()
+                            .flatMap { it.points.orEmpty() }
+                            .flatMap { it.contents?.audios.orEmpty() }
+                            .filter { it.file != null }
+                            .map {
+                                sdk.fetchLocalFile(
+                                    uid = popMapDetailsServer.uid.orEmpty(),
+                                    anyUrl = it.file!!
+                                )
+                            })
                 }
 
                 // Updates UI for downloaded state
@@ -309,6 +343,7 @@ class MainActivity : ComponentActivity() {
             block()
         } catch (e: Exception) {
             Log.e("sdk sample", e.localizedMessage.orEmpty())
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
     }
 }
@@ -325,15 +360,18 @@ fun PopguideSdkPreview() {
                 logo = "operator logo",
                 modifier = Modifier.padding(16.dp)
             )
-            PopmapInfoList(popmaps = listOf(
-                PopMapInfo(
-                    id = 1, uid = "uid", name = "name", coverPicture = "picture",
-                    langPacks = listOf(LangPackInfo(1, "en", "flag"))
-                ), PopMapInfo(
-                    id = 1, uid = "uid", name = "name", coverPicture = "picture",
-                    langPacks = listOf(LangPackInfo(1, "en", "flag"))
-                )
-            ), { _, _ -> })
+            PopmapInfoList(
+                popmaps = listOf(
+                    PopMapInfo(
+                        id = 1, uid = "uid", name = "name", coverPicture = "picture",
+                        langPacks = listOf(LangPackInfo(1, "en", "flag")),
+                        version = "${System.currentTimeMillis()}"
+                    ), PopMapInfo(
+                        id = 1, uid = "uid", name = "name", coverPicture = "picture",
+                        langPacks = listOf(LangPackInfo(1, "en", "flag")),
+                        version = "${System.currentTimeMillis()}"
+                    )
+                ), { _, _ -> })
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 modifier = Modifier.fillMaxWidth(0.8f),

@@ -6,7 +6,7 @@ data class AccountInfo(
     val id: Int,
     val name: String,
     val logo: String,
-    val groupId: Long? = null
+    val groupId: Int
 )
 
 

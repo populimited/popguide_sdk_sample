@@ -17,18 +17,21 @@ import io.populi.sdkapp.uimodel.PopmapDetailsInfo
 
 @Composable
 fun PopMapInfoDetails(
-    detailsInfo: PopmapDetailsInfo, fetchClick: () -> Unit, modifier: Modifier = Modifier
+    detailsInfo: PopmapDetailsInfo,
+    fetchClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
 
     Box(modifier = modifier.fillMaxSize()) {
-        Button(modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .align(Alignment.BottomCenter)
-            .zIndex(4f),
-            onClick = {
-                fetchClick()
-            }) { Text(text = "DonwloadInfo") }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .align(Alignment.BottomCenter)
+                .zIndex(4f)
+        ) {
+            Button(onClick = { fetchClick() }) { Text(text = "DonwloadInfo") }
+        }
 
         Column(modifier = Modifier.verticalScroll(scrollState)) {
             SubcomposeAsyncImage(

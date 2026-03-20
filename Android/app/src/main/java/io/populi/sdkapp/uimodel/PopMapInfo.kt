@@ -7,13 +7,14 @@ data class PopMapInfo(
     val uid: String,
     val name: String,
     val coverPicture: String,
-    val langPacks: List<LangPackInfo>
+    val langPacks: List<LangPackInfo>,
+    val version: String,
 )
 
 data class LangPackInfo(val id: Int, val langName: String, val flagUrl: String)
 
-fun createPopMapInfoList(popmapServer: List<PopMapServer>): List<PopMapInfo> {
-    return popmapServer.map { popmapServer ->
+fun createPopMapInfoList(popmapServers: List<PopMapServer>): List<PopMapInfo> {
+    return popmapServers.map { popmapServer ->
         PopMapInfo(
             id = popmapServer.id,
             uid = popmapServer.uid.orEmpty(),
@@ -26,7 +27,8 @@ fun createPopMapInfoList(popmapServer: List<PopMapServer>): List<PopMapInfo> {
                     flagUrl = it.language_flag.orEmpty()
                 )
             }
-                .orEmpty()
+                .orEmpty(),
+            version = popmapServer.version.orEmpty()
         )
     }
 }

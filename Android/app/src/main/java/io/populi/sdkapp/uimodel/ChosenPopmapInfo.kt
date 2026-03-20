@@ -9,6 +9,7 @@ data class PopmapDetailsInfo(
     val langId: Int,
     val name: String,
     val picture: String,
+    val version: String,
     val percentage: Int = 0,
     val downloadedSize: Long = 0L,
     val sizeToDownload: Long = 0L,
