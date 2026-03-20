@@ -1,20 +1,6 @@
 [versions]
 agp = "8.10.1"
 kotlin = "2.1.0"
-dokka = "1.9.10"
-
-coroutines = "1.9.0"
-retrofit = "2.9.0"
-okhttp = "4.12.0"
-datastore = "1.1.2"
-ant = "1.10.9"
-
-junit = "4.13.2"
-androidx-test-runner = "1.6.2"
-androidx-test-core = "1.6.1"
-androidx-test-ext-junit = "1.2.1"
-androidx-test-rules = "1.6.1"
-espresso = "3.6.1"
 
 core-ktx = "1.15.0"
 lifecycle = "2.8.7"
@@ -26,24 +12,8 @@ coil = "2.7.0"
 sdk = "4.0.0.1774009034609"
 
 [libraries]
-ant = { group = "org.apache.ant", name = "ant", version.ref = "ant" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 vox-populi = { module = "com.vox.populi:sdk", version.ref = "sdk" }
-
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
-androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx-test-core" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test-rules" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espresso" }
-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espresso" }
 
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
@@ -59,6 +29,4 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-maven-publish = { id = "maven-publish" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
