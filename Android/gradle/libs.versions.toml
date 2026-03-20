@@ -23,6 +23,8 @@ compose-bom = "2025.01.01"
 compose-compiler = "1.5.9"
 coil = "2.7.0"
 
+sdk = "4.0.0.1774009034609"
+
 [libraries]
 ant = { group = "org.apache.ant", name = "ant", version.ref = "ant" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -31,6 +33,8 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+vox-populi = { module = "com.vox.populi:sdk", version.ref = "sdk" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }

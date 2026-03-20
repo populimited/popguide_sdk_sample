@@ -51,13 +51,13 @@ android {
 }
 
 dependencies {
-    implementation("com.vox.populi:sdk:4.0.0.1773750444483")
-    implementation(project(":sdk"))
+    implementation(libs.vox.populi)
+
+    implementation(platform(libs.compose.bom))
     implementation(libs.coil.compose)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
