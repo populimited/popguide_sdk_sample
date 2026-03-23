@@ -9,15 +9,11 @@
 /* Begin PBXBuildFile section */
 		645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; };
 		645D0B672F715CE00021DF5D /* PopguideSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		645D0B7D2F7167D10021DF5D /* PopMapCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645D0B7C2F7167D10021DF5D /* PopMapCard.swift */; };
 		B94931FB2B68F3E900F0598F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FA2B68F3E900F0598F /* Nuke */; };
 		B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FC2B68F3E900F0598F /* NukeExtensions */; };
 		B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FE2B68F3E900F0598F /* NukeUI */; };
 		B94932012B68F3E900F0598F /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = B94932002B68F3E900F0598F /* NukeVideo */; };
-		B989E4252B694DEE0059B050 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B989E4242B694DEE0059B050 /* Coordinator.swift */; };
-		B989E4282B694E070059B050 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = B989E4272B694E070059B050 /* Collections */; };
-		B989E42A2B694E070059B050 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = B989E4292B694E070059B050 /* DequeModule */; };
-		B989E42C2B694E070059B050 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = B989E42B2B694E070059B050 /* OrderedCollections */; };
-		B989E42F2B694E250059B050 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = B989E42E2B694E250059B050 /* Page.swift */; };
 		B989E4322B6958900059B050 /* PopMapDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B989E4312B6958900059B050 /* PopMapDetailView.swift */; };
 		B9F3BE7F2B22214400F6AC2D /* VoxSDK_TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3BE7E2B22214400F6AC2D /* VoxSDK_TestApp.swift */; };
 		B9F3BE812B22214400F6AC2D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3BE802B22214400F6AC2D /* ContentView.swift */; };
@@ -41,8 +37,7 @@
 
 /* Begin PBXFileReference section */
 		645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PopguideSDK.xcframework; path = frameworks/PopguideSDK.xcframework; sourceTree = "<group>"; };
-		B989E4242B694DEE0059B050 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
-		B989E42E2B694E250059B050 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
+		645D0B7C2F7167D10021DF5D /* PopMapCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMapCard.swift; sourceTree = "<group>"; };
 		B989E4312B6958900059B050 /* PopMapDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMapDetailView.swift; sourceTree = "<group>"; };
 		B9F3BE7B2B22214400F6AC2D /* VoxSDK-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VoxSDK-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9F3BE7E2B22214400F6AC2D /* VoxSDK_TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxSDK_TestApp.swift; sourceTree = "<group>"; };
@@ -56,13 +51,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B989E4282B694E070059B050 /* Collections in Frameworks */,
 				B94931FB2B68F3E900F0598F /* Nuke in Frameworks */,
-				B989E42A2B694E070059B050 /* DequeModule in Frameworks */,
 				B94932012B68F3E900F0598F /* NukeVideo in Frameworks */,
 				B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */,
 				645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */,
-				B989E42C2B694E070059B050 /* OrderedCollections in Frameworks */,
 				B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,26 +62,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B989E4232B694DE90059B050 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				B989E42D2B694E160059B050 /* Coordinator */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		B989E42D2B694E160059B050 /* Coordinator */ = {
-			isa = PBXGroup;
-			children = (
-				B989E4242B694DEE0059B050 /* Coordinator.swift */,
-				B989E42E2B694E250059B050 /* Page.swift */,
-			);
-			path = Coordinator;
-			sourceTree = "<group>";
-		};
 		B989E4302B6958820059B050 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				645D0B7C2F7167D10021DF5D /* PopMapCard.swift */,
 				B9F3BE802B22214400F6AC2D /* ContentView.swift */,
 				B989E4312B6958900059B050 /* PopMapDetailView.swift */,
 			);
@@ -125,7 +101,6 @@
 			isa = PBXGroup;
 			children = (
 				B989E4302B6958820059B050 /* Views */,
-				B989E4232B694DE90059B050 /* Utils */,
 				B9F3BE7E2B22214400F6AC2D /* VoxSDK_TestApp.swift */,
 				B9F3BE822B22214500F6AC2D /* Assets.xcassets */,
 				B9F3BE842B22214500F6AC2D /* Preview Content */,
@@ -163,9 +138,6 @@
 				B94931FC2B68F3E900F0598F /* NukeExtensions */,
 				B94931FE2B68F3E900F0598F /* NukeUI */,
 				B94932002B68F3E900F0598F /* NukeVideo */,
-				B989E4272B694E070059B050 /* Collections */,
-				B989E4292B694E070059B050 /* DequeModule */,
-				B989E42B2B694E070059B050 /* OrderedCollections */,
 			);
 			productName = "VoxSDK-Test";
 			productReference = B9F3BE7B2B22214400F6AC2D /* VoxSDK-Test.app */;
@@ -197,7 +169,6 @@
 			mainGroup = B9F3BE722B22214400F6AC2D;
 			packageReferences = (
 				B94931F92B68F3E900F0598F /* XCRemoteSwiftPackageReference "Nuke" */,
-				B989E4262B694E070059B050 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = B9F3BE7C2B22214400F6AC2D /* Products */;
 			projectDirPath = "";
@@ -227,9 +198,8 @@
 			files = (
 				B9F3BE812B22214400F6AC2D /* ContentView.swift in Sources */,
 				B9F3BE7F2B22214400F6AC2D /* VoxSDK_TestApp.swift in Sources */,
-				B989E42F2B694E250059B050 /* Page.swift in Sources */,
+				645D0B7D2F7167D10021DF5D /* PopMapCard.swift in Sources */,
 				B989E4322B6958900059B050 /* PopMapDetailView.swift in Sources */,
-				B989E4252B694DEE0059B050 /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,14 +417,6 @@
 				minimumVersion = 12.3.0;
 			};
 		};
-		B989E4262B694E070059B050 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-collections.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.6;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -477,21 +439,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B94931F92B68F3E900F0598F /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeVideo;
-		};
-		B989E4272B694E070059B050 /* Collections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B989E4262B694E070059B050 /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = Collections;
-		};
-		B989E4292B694E070059B050 /* DequeModule */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B989E4262B694E070059B050 /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = DequeModule;
-		};
-		B989E42B2B694E070059B050 /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B989E4262B694E070059B050 /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
