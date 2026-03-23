@@ -62,7 +62,7 @@ Collection items (`PopMapCollectionDetailDTO`) are lighter DTOs that are matched
 
 ### 7. Manage
 
-- `cancelDownload(of:)` — stops an active download (files already on disk are preserved).
+- `cancelDownload(of:)` — stops an active download.
 - `deletePopMap(_:)` — removes all downloaded assets for the tour.
 
 ## Project Structure
