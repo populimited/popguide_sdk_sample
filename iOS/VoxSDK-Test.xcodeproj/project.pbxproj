@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; };
+		645D0B672F715CE00021DF5D /* PopguideSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B94931FB2B68F3E900F0598F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FA2B68F3E900F0598F /* Nuke */; };
 		B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FC2B68F3E900F0598F /* NukeExtensions */; };
 		B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FE2B68F3E900F0598F /* NukeUI */; };
 		B94932012B68F3E900F0598F /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = B94932002B68F3E900F0598F /* NukeVideo */; };
-		B9587B6D2BBD475D00996DF6 /* PopguideSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9587B6C2BBD475D00996DF6 /* PopguideSDK.xcframework */; };
-		B9587B6E2BBD475D00996DF6 /* PopguideSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9587B6C2BBD475D00996DF6 /* PopguideSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B989E4252B694DEE0059B050 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B989E4242B694DEE0059B050 /* Coordinator.swift */; };
 		B989E4282B694E070059B050 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = B989E4272B694E070059B050 /* Collections */; };
 		B989E42A2B694E070059B050 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = B989E4292B694E070059B050 /* DequeModule */; };
@@ -32,7 +32,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B9587B6E2BBD475D00996DF6 /* PopguideSDK.xcframework in Embed Frameworks */,
+				645D0B672F715CE00021DF5D /* PopguideSDK.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,7 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B9587B6C2BBD475D00996DF6 /* PopguideSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PopguideSDK.xcframework; path = frameworks/PopguideSDK.xcframework; sourceTree = "<group>"; };
+		645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PopguideSDK.xcframework; path = frameworks/PopguideSDK.xcframework; sourceTree = "<group>"; };
 		B989E4242B694DEE0059B050 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		B989E42E2B694E250059B050 /* Page.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		B989E4312B6958900059B050 /* PopMapDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMapDetailView.swift; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 				B989E42A2B694E070059B050 /* DequeModule in Frameworks */,
 				B94932012B68F3E900F0598F /* NukeVideo in Frameworks */,
 				B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */,
-				B9587B6D2BBD475D00996DF6 /* PopguideSDK.xcframework in Frameworks */,
+				645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */,
 				B989E42C2B694E070059B050 /* OrderedCollections in Frameworks */,
 				B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */,
 			);
@@ -99,7 +99,7 @@
 		B9B665082B2221850003FA9C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B9587B6C2BBD475D00996DF6 /* PopguideSDK.xcframework */,
+				645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

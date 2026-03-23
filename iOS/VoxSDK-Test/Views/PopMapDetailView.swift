@@ -25,13 +25,17 @@ struct PopMapDetailView: View {
   
   @State var popMap: PopMapModel
   @State var languageId: Int
+  var loginResponse: ApiResponseLogin?
   @State private var mapDetail: PopMapDetailsServer?
   @State private var fullDownloadMapSize: Double?
   @State private var lightDownloadMapSize: Double?
   @State private var progress: Double?
   @State private var isInstalled = false
+  @State private var isDownloading = false
   @State private var cancellables = Set<AnyCancellable>()
   @State private var localFilesPath = [LocalFile]()
+  @State private var missingFilesCount = 0
+  @State private var installedSize: Int64 = 0
   
   // MARK: - Environment
   
@@ -76,6 +80,16 @@ struct PopMapDetailView: View {
               .foregroundStyle(.black)
           }
           
+          if missingFilesCount > 0 {
+            Text("Missing files: \(missingFilesCount)")
+              .foregroundStyle(.black)
+          }
+
+          if installedSize > 0 {
+            Text("Installed size: \(ByteCountFormatter.string(fromByteCount: installedSize, countStyle: .file))")
+              .foregroundStyle(.black)
+          }
+
           Button {
             if isInstalled {
               deleteMap()
@@ -89,8 +103,20 @@ struct PopMapDetailView: View {
               .foregroundStyle(.white)
               .clipShape(RoundedRectangle(cornerRadius: 12))
           }
-          .disabled(mapDetail == nil)
+          .disabled(mapDetail == nil || isDownloading)
           .opacity(mapDetail == nil ? 0.3 : 1)
+
+          if isDownloading {
+            Button {
+              cancelDownload()
+            } label: {
+              Text("Cancel Download")
+                .padding()
+                .background(.red)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+          }
 
           Text(isInstalled ? "Map Installed" : "Progress: \(progress ?? 0)")
             .foregroundStyle(.black)
@@ -145,37 +171,51 @@ struct PopMapDetailView: View {
     guard let popmapId = popMap.id else { return }
     do {
       let response = try await popguideManager.fetchPopMapDetails(
+        body: DetailsBody(
+          marketplacesUrl: nil,
+          messageBoxUrl: nil,
+          popMapDetailsUrl: loginResponse?.popMapDetailsUrl,
+          walksUrl: nil
+        ),
         id: "\(popmapId)",
-        languageId: languageId
+        languageId: languageId,
+        forceUpdate: true,
+        accountId: popMap.accountId ?? loginResponse?.account?.id ?? 0
       )
-      guard let popMapTotalSizeModel = response?.popMapDetails?.popMapTotalSize else {
+      guard let popMapTotalSizeModel = response?.details.popMapTotalSize else {
         return
       }
       // For Map size
       let mapSizeMB = Double(popMapTotalSizeModel.map) / 1_000_000.0
-      
+
       // Calculate full Map Size
       fullDownloadMapSize = (Double(popMapTotalSizeModel.audio + popMapTotalSizeModel.image) / 1_000_000.0) + Double(mapSizeMB)
-      
+
       // Calculate light Map Size
       lightDownloadMapSize = Double(popMapTotalSizeModel.image) / 1_000_000.0
-      
-      mapDetail = response?.popMapDetails
+
+      mapDetail = response?.details
+      refreshDownloadMetrics()
     } catch {
       print(error.localizedDescription)
     }
   }
   
   private func downloadFiles() {
+    guard let mapDetail else { return }
+    isDownloading = true
+    progress = 0
     popguideManager.fetchPopMapDownlodables(
-      mapDetail: mapDetail!,
+      mapDetail: mapDetail,
       downloadType: .full
     )
     .receive(on: DispatchQueue.main)
     .sink { result in
+      isDownloading = false
       switch result {
       case .finished:
         isInstalled = true
+        refreshDownloadMetrics()
       case let .failure(error):
         print(error.localizedDescription)
       }
@@ -187,14 +227,41 @@ struct PopMapDetailView: View {
   
   private func isMapInstalled() -> Bool {
     guard let mapDetail else { return false }
-    let missingFiles = popguideManager.getMissingDownlodables(mapDetail: mapDetail)
+    let missingFiles = popguideManager.getMissingDownlodables(
+      mapDetail: mapDetail,
+      downloadType: .full
+    )
     return missingFiles.totalSize == 0
   }
-  
+
+  private func refreshDownloadMetrics() {
+    guard let mapDetail else { return }
+    let missing = popguideManager.getMissingDownlodables(
+      mapDetail: mapDetail,
+      downloadType: .full
+    )
+    missingFilesCount = missing.remoteUrls.count
+    installedSize = popguideManager.popMapSize(mapDetail: mapDetail) ?? 0
+  }
+
+  private func cancelDownload() {
+    guard let mapDetail else { return }
+    popguideManager.cancelDownload(of: mapDetail)
+    cancellables.removeAll()
+    isDownloading = false
+    refreshDownloadMetrics()
+  }
+
   private func deleteMap() {
     guard let mapDetail else { return }
+    if isDownloading {
+      popguideManager.cancelDownload(of: mapDetail)
+      cancellables.removeAll()
+      isDownloading = false
+    }
     popguideManager.deletePopMap(mapDetail)
     isInstalled = false
+    refreshDownloadMetrics()
   }
   
   private func getPointLocalFiels(_ point: PointServer) -> [LocalFile] {

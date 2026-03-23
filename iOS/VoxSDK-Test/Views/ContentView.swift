@@ -14,11 +14,15 @@ struct ContentView: View {
   @EnvironmentObject private var popguideManager: PopguideManager
   
   // States
-  @State private var maps: [PopMapModel] = []
-  
+  @State private var loginResponse: ApiResponseLogin?
+
   // Constants
-  private let username: String = "POP-000312"
-  private let password: String = "98741"
+  private let username: String = "GBD-000365"
+  private let password: String = "13360"
+
+  private var maps: [PopMapModel] {
+    loginResponse?.popMaps ?? []
+  }
   
   var body: some View {
     ZStack(alignment: .top) {
@@ -34,7 +38,7 @@ struct ContentView: View {
         if !maps.isEmpty {
           VStack(spacing: 24) {
             ForEach(maps.indices, id: \.self) { index in
-              PopMapView(popMap: maps[index])
+              PopMapView(popMap: maps[index], loginResponse: loginResponse)
             }
           }
         }
@@ -63,8 +67,8 @@ struct ContentView: View {
           password: password
         )
         print(response.success ?? false)
-        
-        maps = response.popMaps ?? []
+
+        loginResponse = response
       } catch {
         print(error.localizedDescription)
       }
@@ -76,7 +80,7 @@ struct ContentView: View {
   ContentView()
     .environmentObject(
       PopguideManager(
-        appName: "TestApp",
+        appName: "popguide",
         language: .english,
         environment: .production
       )
@@ -93,7 +97,8 @@ struct PopMapView: View {
   
   // States
   @State var popMap: PopMapModel
-  
+  var loginResponse: ApiResponseLogin?
+
   private let columns: [GridItem] = [
     GridItem(.flexible(minimum: 40)),
     GridItem(.flexible(minimum: 40)),
@@ -134,7 +139,8 @@ struct PopMapView: View {
                     Page(
                       .mapDetail(
                         popMap: popMap,
-                        languageId: languagePack.languageId!
+                        languageId: languagePack.languageId!,
+                        loginResponse: loginResponse
                       )
                     )
                   )

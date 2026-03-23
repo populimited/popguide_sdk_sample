@@ -1,7 +1,9 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
-// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name PopguideSDK
+// swift-compiler-version: Apple Swift version 6.2 effective-5.10 (swiftlang-6.2.0.19.9 clang-1700.3.19.1)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -module-name PopguideSDK
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2
 import Combine
+import Darwin
 import Foundation
 import OSLog
 import Swift
@@ -10,58 +12,98 @@ import _Concurrency
 import _StringProcessing
 import _SwiftConcurrencyShims
 public protocol LocalFileCheckable {
+  #if compiler(>=5.3) && $NonescapableTypes
   var file: Swift.String? { get }
+  #endif
+}
+public protocol URLConvertible {
 }
 extension PopguideSDK.LocalFileCheckable {
+  #if compiler(>=5.3) && $NonescapableTypes
   public func localFile(mapDetailUID: Swift.String) -> Foundation.URL?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func localURL() -> Foundation.URL?
+  #endif
 }
-extension PopguideSDK.AudioServer : PopguideSDK.LocalFileCheckable {
+extension PopguideSDK.AudioServer : PopguideSDK.LocalFileCheckable, PopguideSDK.URLConvertible {
 }
-extension PopguideSDK.ClusterPointIconServer : PopguideSDK.LocalFileCheckable {
+extension PopguideSDK.ClusterPointIconServer : PopguideSDK.LocalFileCheckable, PopguideSDK.URLConvertible {
 }
-extension PopguideSDK.IconServer : PopguideSDK.LocalFileCheckable {
+extension PopguideSDK.IconServer : PopguideSDK.LocalFileCheckable, PopguideSDK.URLConvertible {
 }
-extension PopguideSDK.ImageServer : PopguideSDK.LocalFileCheckable {
+extension PopguideSDK.ImageServer : PopguideSDK.LocalFileCheckable, PopguideSDK.URLConvertible {
 }
-extension PopguideSDK.VideoServer : PopguideSDK.LocalFileCheckable {
+extension PopguideSDK.VideoServer : PopguideSDK.LocalFileCheckable, PopguideSDK.URLConvertible {
+}
+extension PopguideSDK.URLConvertible where Self : PopguideSDK.LocalFileCheckable {
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var fileURL: Foundation.URL? {
+    get
+  }
+  #endif
+}
+extension PopguideSDK.PopMapDetailsServer {
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func localFile(localFile: any PopguideSDK.LocalFileCheckable) -> Foundation.URL?
+  #endif
 }
 public typealias PopguideAccount = PopguideSDK.ApiResponseLogin
 final public class PopguideManager : Combine.ObservableObject {
   public enum Language : Swift.String {
     case english
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
     }
   }
-  public enum Environment {
+  public enum Environment : Swift.String {
     case production
     case staging
-    public static func == (a: PopguideSDK.PopguideManager.Environment, b: PopguideSDK.PopguideManager.Environment) -> Swift.Bool
-    public func hash(into hasher: inout Swift.Hasher)
-    public var hashValue: Swift.Int {
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init?(rawValue: Swift.String)
+    #endif
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
       get
     }
   }
-  public init(appName: Swift.String, language: PopguideSDK.PopguideManager.Language, environment: PopguideSDK.PopguideManager.Environment)
+  final public let appName: Swift.String
+  final public let environment: PopguideSDK.PopguideManager.Environment
+  final public var popguideDomain: Swift.String {
+    get
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(appName: Swift.String, language: PopguideSDK.PopguideManager.Language = .english, customLanguage: Swift.String? = nil, environment: PopguideSDK.PopguideManager.Environment)
+  #endif
   final public var installationId: Swift.String {
     get
     set
   }
-  #if compiler(>=5.3) && $AsyncAwait
   final public func fetchAccount(username: Swift.String, password: Swift.String) async throws -> PopguideSDK.ApiResponseLogin
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func fetchAccounts(body: PopguideSDK.HandshakeBody?) async throws -> PopguideSDK.HandshakeResponseServer
   #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  final public func fetchAccounts(groupId: Swift.String) async throws -> PopguideSDK.HandshakeResponse
+  #if compiler(>=5.3) && $NonescapableTypes
+  @_Concurrency.MainActor final public func fetchPopMapCollections(collectionsUrl: Swift.String, languageId: Swift.String, forceUpdate: Swift.Bool = false) async throws -> PopguideSDK.PopMapCollectionsResponse?
   #endif
-  #if compiler(>=5.3) && $AsyncAwait
-  @_Concurrency.MainActor final public func fetchPopMapDetails(id: Swift.String, languageId: Swift.Int, forceUpdate: Swift.Bool = false) async throws -> PopguideSDK.DetailsResponseServer?
+  #if compiler(>=5.3) && $NonescapableTypes
+  @_Concurrency.MainActor final public func fetchPopMapDetails(body: PopguideSDK.DetailsBody, id: Swift.String, languageId: Swift.Int, forceUpdate: Swift.Bool = false, accountId: Swift.Int = 0) async throws -> PopguideSDK.DetailsResponseServer?
   #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func fetchCachedPopMapDetails(id: Swift.String, accountId: Swift.Int = 0) throws -> PopguideSDK.DetailsResponseServer?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
   final public func popMapSize(mapDetail: PopguideSDK.PopMapDetailsServer) -> Swift.Int64?
+  #endif
   final public func fetchPopMapDownlodables(mapDetail: PopguideSDK.PopMapDetailsServer, downloadType: PopguideSDK.DownloadType) -> Combine.AnyPublisher<Swift.Double, any Swift.Error>
   final public func getMissingDownlodables(mapDetail: PopguideSDK.PopMapDetailsServer, downloadType: PopguideSDK.DownloadType = .full) -> (remoteUrls: [Swift.String], totalSize: Swift.Int64)
+  #if compiler(>=5.3) && $NonescapableTypes
   final public func fetchPopMapDownlodables(mapDetail: PopguideSDK.PopMapDetailsServer, downloadType: PopguideSDK.DownloadType, progressComplition: @escaping (CoreFoundation.CGFloat) -> Swift.Void, completeCompletion: @escaping ((any Swift.Error)?) -> Swift.Void)
+  #endif
   final public func deletePopMap(id: Swift.String)
   final public func deletePopMap(_ map: PopguideSDK.PopMapDetailsServer)
   final public func cancelDownload(of mapDetail: PopguideSDK.PopMapDetailsServer)
@@ -76,6 +118,578 @@ public enum DownloadType {
   public var hashValue: Swift.Int {
     get
   }
+}
+extension PopguideSDK.ApiClient {
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<D, E>(with endpoint: E, decoder: Foundation.JSONDecoder = .default, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> E.Response where D : Swift.Decodable, D == E.Response, E : PopguideSDK.Requestable
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<E>(with endpoint: E, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> E.Response where E : PopguideSDK.Requestable, E.Response == Foundation.Data
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<E>(with endpoint: E, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> E.Response where E : PopguideSDK.Requestable, E.Response == Swift.String
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  final public func request<E>(with endpoint: E, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> E.Response where E : PopguideSDK.Requestable, E.Response == ()
+  #endif
+}
+extension PopguideSDK.ApiClient {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  final public func request<D, E>(with endpoint: E, decoder: Foundation.JSONDecoder = .default, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil, completion: @escaping (PopguideSDK.Response<E.Response>) -> Swift.Void) -> (any PopguideSDK.NetworkCancellable)? where D : Swift.Decodable, D : Swift.Sendable, D == E.Response, E : PopguideSDK.Requestable
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil, completion: @escaping (PopguideSDK.Response<E.Response>) -> Swift.Void) -> (any PopguideSDK.NetworkCancellable)? where E : PopguideSDK.Requestable, E.Response == Foundation.Data
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil, completion: @escaping (PopguideSDK.Response<E.Response>) -> Swift.Void) -> (any PopguideSDK.NetworkCancellable)? where E : PopguideSDK.Requestable, E.Response == Swift.String
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil, completion: @escaping (PopguideSDK.Response<E.Response>) -> Swift.Void) -> (any PopguideSDK.NetworkCancellable)? where E : PopguideSDK.Requestable, E.Response == ()
+  #endif
+}
+extension PopguideSDK.ApiClient {
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<D, E>(with endpoint: E, decoder: Foundation.JSONDecoder = .default, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) -> Combine.AnyPublisher<D, any Swift.Error> where D : Swift.Decodable, D == E.Response, E : PopguideSDK.Requestable
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) -> Combine.AnyPublisher<E.Response, any Swift.Error> where E : PopguideSDK.Requestable, E.Response == Foundation.Data
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) -> Combine.AnyPublisher<E.Response, any Swift.Error> where E : PopguideSDK.Requestable, E.Response == Swift.String
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func request<E>(with endpoint: E, queue: Dispatch.DispatchQueue = .main, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) -> Combine.AnyPublisher<E.Response, any Swift.Error> where E : PopguideSDK.Requestable, E.Response == ()
+  #endif
+}
+@_hasMissingDesignatedInitializers final public class DownloadTask : PopguideSDK.NetworkCancellable, Swift.Hashable {
+  public typealias ProgressCompletion = (_ progress: Foundation.Progress, _ remoteFileSize: Swift.Int64) -> Swift.Void
+  public typealias ResultCompletion = (_ response: PopguideSDK.Response<PopguideSDK.DownloadTask.DownloadResult>) -> Swift.Void
+  public struct DownloadResult {
+    public var fileData: Foundation.Data
+    public var localURL: Foundation.URL
+  }
+  public struct DownloadFileDestination {
+    public let url: Foundation.URL
+    public let removePreviousFile: Swift.Bool
+    public init(url: Foundation.URL, removePreviousFile: Swift.Bool)
+  }
+  public enum DownloadState {
+    case waitingStart
+    case paused
+    case downloading
+    case completed
+    case cancelled
+    case error
+    public static func == (a: PopguideSDK.DownloadTask.DownloadState, b: PopguideSDK.DownloadTask.DownloadState) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public var state: PopguideSDK.DownloadTask.DownloadState
+  final public func cancel()
+  final public func pause()
+  final public func resume()
+  @discardableResult
+  final public func downloadProgress(queue: Dispatch.DispatchQueue = .global(qos: .background), completion: @escaping PopguideSDK.DownloadTask.ProgressCompletion) -> Self
+  @discardableResult
+  final public func response(queue: Dispatch.DispatchQueue = .main, completion: @escaping PopguideSDK.DownloadTask.ResultCompletion) -> Self
+  final public func hash(into hasher: inout Swift.Hasher)
+  public static func == (lhs: PopguideSDK.DownloadTask, rhs: PopguideSDK.DownloadTask) -> Swift.Bool
+  @objc deinit
+  final public var hashValue: Swift.Int {
+    get
+  }
+}
+extension PopguideSDK.ApiClient {
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func download(with endpoint: PopguideSDK.DownloadEndpoint, destination: PopguideSDK.DownloadTask.DownloadFileDestination? = nil) -> PopguideSDK.DownloadTask?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func download(with endpoint: PopguideSDK.DownloadEndpoint, destination: PopguideSDK.DownloadTask.DownloadFileDestination? = nil) async throws -> PopguideSDK.DownloadTask.DownloadResult
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  final public func download(url: Foundation.URL) -> PopguideSDK.DownloadTask?
+  #endif
+}
+extension PopguideSDK.ApiClient : Foundation.URLSessionDownloadDelegate {
+  @objc final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+  @objc final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  @objc final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+}
+extension PopguideSDK.ApiClient {
+  public struct Middleware : PopguideSDK.MiddlewareProtocol {
+    public let id: Foundation.UUID
+    public let pathComponent: Swift.String
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init(pathComponent: Swift.String, preRequestCallback: @escaping (Foundation.URLRequest) throws -> Swift.Void, postResponseCallback: @escaping (Foundation.Data?, Foundation.URLResponse?, (any Swift.Error)?) async throws -> PopguideSDK.ApiClient.MiddlewarePostRequestResult)
+    #endif
+    public func preRequest(_ request: inout Foundation.URLRequest) throws
+    #if compiler(>=5.3) && $NonescapableTypes
+    public func postResponse(data: Foundation.Data?, response: Foundation.URLResponse?, error: (any Swift.Error)?) async throws -> PopguideSDK.ApiClient.MiddlewarePostRequestResult
+    #endif
+  }
+  public enum MiddlewarePostRequestResult {
+    case next
+    case retryRequest
+    public static func == (a: PopguideSDK.ApiClient.MiddlewarePostRequestResult, b: PopguideSDK.ApiClient.MiddlewarePostRequestResult) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+}
+public protocol MiddlewareProtocol {
+  var id: Foundation.UUID { get }
+  var pathComponent: Swift.String { get }
+  func preRequest(_ request: inout Foundation.URLRequest) throws
+  #if compiler(>=5.3) && $NonescapableTypes
+  func postResponse(data: Foundation.Data?, response: Foundation.URLResponse?, error: (any Swift.Error)?) async throws -> PopguideSDK.ApiClient.MiddlewarePostRequestResult
+  #endif
+}
+@_hasMissingDesignatedInitializers final public class UploadTask<ResponseType> : PopguideSDK.NetworkCancellable, Swift.Hashable {
+  public typealias ProgressCompletion = (_ progress: Foundation.Progress) -> Swift.Void
+  public typealias ResultCompletion = (_ response: PopguideSDK.Response<ResponseType>) -> Swift.Void
+  public enum UploadState {
+    case waitingStart
+    case paused
+    case uploading
+    case completed
+    case cancelled
+    case error
+    public static func == (a: PopguideSDK.UploadTask<ResponseType>.UploadState, b: PopguideSDK.UploadTask<ResponseType>.UploadState) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public var state: PopguideSDK.UploadTask<ResponseType>.UploadState
+  final public func cancel()
+  @available(iOS 17.0, macOS 14.0, *)
+  final public func pause()
+  @available(iOS 17.0, macOS 14.0, *)
+  final public func resume()
+  @discardableResult
+  final public func progress(queue: Dispatch.DispatchQueue = .global(qos: .background), completion: @escaping PopguideSDK.UploadTask<ResponseType>.ProgressCompletion) -> Self
+  @discardableResult
+  final public func response(queue: Dispatch.DispatchQueue = .main, completion: @escaping PopguideSDK.UploadTask<ResponseType>.ResultCompletion) -> Self
+  final public func hash(into hasher: inout Swift.Hasher)
+  public static func == (lhs: PopguideSDK.UploadTask<ResponseType>, rhs: PopguideSDK.UploadTask<ResponseType>) -> Swift.Bool
+  @objc deinit
+  final public var hashValue: Swift.Int {
+    get
+  }
+}
+extension PopguideSDK.ApiClient {
+  final public func upload<D>(with endpoint: PopguideSDK.MultipartFormEndpoint<D>) throws -> PopguideSDK.UploadTask<D> where D : Swift.Decodable
+  final public func upload(with endpoint: PopguideSDK.MultipartFormEndpoint<Swift.String>) throws -> PopguideSDK.UploadTask<Swift.String>
+  final public func upload(with endpoint: PopguideSDK.MultipartFormEndpoint<Swift.Void>) throws -> PopguideSDK.UploadTask<Swift.Void>
+  final public func upload(with endpoint: PopguideSDK.MultipartFormEndpoint<Foundation.Data>) throws -> PopguideSDK.UploadTask<Foundation.Data>
+}
+public protocol NetworkCancellable {
+  func cancel()
+}
+extension Foundation.URLSessionTask : PopguideSDK.NetworkCancellable {
+}
+public typealias CompletionHandler<T> = (PopguideSDK.Response<T>) -> Swift.Void
+@objc final public class ApiClient : ObjectiveC.NSObject {
+  @PopguideSDK.ThreadSafe final public var config: any PopguideSDK.NetworkConfigurable {
+    get
+  }
+  public init(config: any PopguideSDK.NetworkConfigurable)
+  final public func destroy()
+  @objc deinit
+}
+extension PopguideSDK.ApiClient {
+  final public func updateHeaders(_ headers: [Swift.String : Swift.String])
+  final public func setHeaders(_ headers: [Swift.String : Swift.String])
+  final public func cleanHeaders()
+  final public func removeHeaders(keys: [Swift.String])
+  final public func addMiddleware(_ middleware: any PopguideSDK.MiddlewareProtocol)
+  final public func removeMiddleware(for component: Swift.String)
+  final public func removeMiddleware(_ middleware: any PopguideSDK.MiddlewareProtocol)
+}
+extension PopguideSDK.ApiClient : Foundation.URLSessionDelegate {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc final public func urlSession(_ session: Foundation.URLSession, didReceive challenge: Foundation.URLAuthenticationChallenge, completionHandler: @escaping (Foundation.URLSession.AuthChallengeDisposition, Foundation.URLCredential?) -> Swift.Void)
+  #endif
+}
+public protocol NetworkConfigurable {
+  var baseURL: Foundation.URL { get set }
+  var headers: [Swift.String : Swift.String] { get set }
+  var queryParameters: [Swift.String : Swift.String] { get }
+  var bodyParameters: [Swift.String : Any] { get }
+  var trustedDomains: [Swift.String] { get set }
+  var requestTimeout: Foundation.TimeInterval { get set }
+  var debug: Swift.Bool { get set }
+}
+final public class NetworkConfiguration : PopguideSDK.NetworkConfigurable {
+  final public var baseURL: Foundation.URL
+  final public var headers: [Swift.String : Swift.String]
+  final public var queryParameters: [Swift.String : Swift.String]
+  final public var bodyParameters: [Swift.String : Any]
+  final public var trustedDomains: [Swift.String]
+  final public var requestTimeout: Foundation.TimeInterval
+  final public var debug: Swift.Bool
+  public init(baseURL: Foundation.URL, headers: [Swift.String : Swift.String] = [:], queryParameters: [Swift.String : Swift.String] = [:], bodyParameters: [Swift.String : Any] = [:], trustedDomains: [Swift.String] = [], requestTimeout: Foundation.TimeInterval = 60, debug: Swift.Bool = true)
+  @objc deinit
+}
+public struct DownloadEndpoint : PopguideSDK.Requestable {
+  public typealias Response = Swift.Void
+  public var path: Swift.String
+  public var isFullPath: Swift.Bool
+  public var method: PopguideSDK.HTTPMethod
+  public var headers: [Swift.String : Swift.String]
+  public var useEndpointHeaderOnly: Swift.Bool
+  public var queryParameters: PopguideSDK.QueryParameters?
+  public let body: PopguideSDK.HTTPBody?
+  public let form: PopguideSDK.MultipartFormData?
+  public var allowMiddlewares: Swift.Bool
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(path: Swift.String, isFullPath: Swift.Bool = false, conte method: PopguideSDK.HTTPMethod = .get, headers: [Swift.String : Swift.String] = [:], useEndpointHeaderOnly: Swift.Bool = false, queryParameters: PopguideSDK.QueryParameters? = nil, allowMiddlewares: Swift.Bool = true)
+  #endif
+}
+public struct Endpoint<Value> : PopguideSDK.Requestable {
+  public typealias Response = Value
+  public var path: Swift.String
+  public var isFullPath: Swift.Bool
+  public var method: PopguideSDK.HTTPMethod
+  public var headers: [Swift.String : Swift.String]
+  public var useEndpointHeaderOnly: Swift.Bool
+  public var queryParameters: PopguideSDK.QueryParameters?
+  public var body: PopguideSDK.HTTPBody?
+  public let form: PopguideSDK.MultipartFormData?
+  public var allowMiddlewares: Swift.Bool
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(path: Swift.String, isFullPath: Swift.Bool = false, method: PopguideSDK.HTTPMethod = .get, headers: [Swift.String : Swift.String] = [:], useEndpointHeaderOnly: Swift.Bool = false, queryParameters: PopguideSDK.QueryParameters? = nil, body: PopguideSDK.HTTPBody? = nil, allowMiddlewares: Swift.Bool = true)
+  #endif
+}
+public struct HTTPBody {
+  public let data: Foundation.Data?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(dictionary: [Swift.String : Any], bodyEncoding: PopguideSDK.BodyEncoding = .json())
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(encodable: any Swift.Encodable, bodyEncoding: PopguideSDK.BodyEncoding = .json())
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(string: Swift.String)
+  #endif
+}
+public struct MultipartFormEndpoint<Value> : PopguideSDK.Requestable {
+  public typealias Response = Value
+  public var path: Swift.String
+  public var isFullPath: Swift.Bool
+  public var method: PopguideSDK.HTTPMethod
+  public var headers: [Swift.String : Swift.String]
+  public var useEndpointHeaderOnly: Swift.Bool
+  public var queryParameters: PopguideSDK.QueryParameters?
+  public let body: PopguideSDK.HTTPBody?
+  public var allowMiddlewares: Swift.Bool
+  public var form: PopguideSDK.MultipartFormData?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(path: Swift.String, isFullPath: Swift.Bool = false, method: PopguideSDK.HTTPMethod = .post, headers: [Swift.String : Swift.String] = [:], useEndpointHeaderOnly: Swift.Bool = false, queryParameters: PopguideSDK.QueryParameters? = nil, allowMiddlewares: Swift.Bool = true, form: PopguideSDK.MultipartFormData)
+  #endif
+}
+public struct MultipartFormData {
+  public init()
+  public init(completion: (inout PopguideSDK.MultipartFormData) -> Swift.Void)
+  public func addTextField(named name: Swift.String, value: Swift.String)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func addDataField(named name: Swift.String, data: Foundation.Data, fileName: Swift.String? = nil, mimeType: Swift.String? = nil)
+  #endif
+}
+public enum HTTPMethod : Swift.String {
+  case options
+  case get
+  case head
+  case post
+  case put
+  case patch
+  case delete
+  case trace
+  case connect
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum BodyEncoding {
+  case json(encoder: Foundation.JSONEncoder = JSONEncoder())
+  case formUrlEncodedAscii
+  case plainText
+}
+public protocol Requestable {
+  associatedtype Response
+  var path: Swift.String { get }
+  var isFullPath: Swift.Bool { get }
+  var method: PopguideSDK.HTTPMethod { get }
+  var headers: [Swift.String : Swift.String] { get }
+  var useEndpointHeaderOnly: Swift.Bool { get }
+  #if compiler(>=5.3) && $NonescapableTypes
+  var queryParameters: PopguideSDK.QueryParameters? { get }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  var body: PopguideSDK.HTTPBody? { get }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  var form: PopguideSDK.MultipartFormData? { get }
+  #endif
+  var allowMiddlewares: Swift.Bool { get }
+  func urlRequest(with config: any PopguideSDK.NetworkConfigurable) throws -> Foundation.URLRequest
+}
+extension PopguideSDK.Requestable {
+  public func urlRequest(with config: any PopguideSDK.NetworkConfigurable) throws -> Foundation.URLRequest
+}
+public struct QueryParameters {
+  public let parameters: [Swift.String : Any]
+  public init(parameters: [Swift.String : Any])
+  public init(encodable: any Swift.Encodable) throws
+}
+extension Foundation.JSONDecoder {
+  public static var `default`: Foundation.JSONDecoder {
+    get
+  }
+}
+public struct Response<Value> : Swift.Sendable where Value : Swift.Sendable {
+  public let result: PopguideSDK.Result<Value>
+  public var request: Foundation.URLRequest? {
+    get
+  }
+  public var response: Foundation.URLResponse? {
+    get
+  }
+  public init(result: PopguideSDK.Result<Value>)
+  public func printCurl()
+  public var statusCode: Swift.Int {
+    get
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var value: Value? {
+    get
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var error: (any Swift.Error)? {
+    get
+  }
+  #endif
+}
+public enum Result<Value> : Swift.Sendable where Value : Swift.Sendable {
+  case success(Value)
+  case failure(PopguideSDK.NetworkError)
+  public var isSuccess: Swift.Bool {
+    get
+  }
+  public var isFailure: Swift.Bool {
+    get
+  }
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var value: Value? {
+    get
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var error: (any Swift.Error)? {
+    get
+  }
+  #endif
+}
+public enum NetworkError : Swift.Error, Swift.CustomStringConvertible {
+  case error(statusCode: Swift.Int, data: Foundation.Data?)
+  case parsedError(error: any Swift.Decodable)
+  case parsingFailed
+  case emptyResponse
+  case invalidSessions
+  case invalidDownloadUrl
+  case invalidDownloadFileData
+  case unableToSaveFile(_: Foundation.URL?)
+  case cancelled
+  case middlewareMaxRetry
+  case networkFailure
+  case urlGeneration
+  case invalidFormData
+  case dataToStringFailure(data: Foundation.Data)
+  case middleware(any Swift.Error)
+  case generic(any Swift.Error)
+  public var description: Swift.String {
+    get
+  }
+}
+extension PopguideSDK.NetworkError : Foundation.LocalizedError {
+  #if compiler(>=5.3) && $NonescapableTypes
+  public var errorDescription: Swift.String? {
+    get
+  }
+  #endif
+}
+public protocol SNProgressHUD : Swift.Sendable {
+  func show()
+  func dismiss()
+}
+public protocol ScopedMutex {
+  func sync<R>(execute work: () throws -> R) rethrows -> R
+  #if compiler(>=5.3) && $NonescapableTypes
+  func trySync<R>(execute work: () throws -> R) rethrows -> R?
+  #endif
+}
+public protocol RawMutex : PopguideSDK.ScopedMutex {
+  associatedtype MutexPrimitive
+  var underlyingMutex: Self.MutexPrimitive { get set }
+  func unbalancedLock()
+  func unbalancedTryLock() -> Swift.Bool
+  func unbalancedUnlock()
+}
+extension PopguideSDK.RawMutex {
+  public func sync<R>(execute work: () throws -> R) rethrows -> R
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func trySync<R>(execute work: () throws -> R) rethrows -> R?
+  #endif
+}
+final public class PThreadMutex : PopguideSDK.RawMutex {
+  public typealias MutexPrimitive = _DarwinFoundation2.pthread_mutex_t
+  public enum PThreadMutexType {
+    case normal
+    case recursive
+    public static func == (a: PopguideSDK.PThreadMutex.PThreadMutexType, b: PopguideSDK.PThreadMutex.PThreadMutexType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public var underlyingMutex: _DarwinFoundation2.pthread_mutex_t
+  public init(type: PopguideSDK.PThreadMutex.PThreadMutexType = .normal)
+  final public func unbalancedLock()
+  final public func unbalancedTryLock() -> Swift.Bool
+  final public func unbalancedUnlock()
+  @objc deinit
+}
+@available(macOS 10.12, iOS 10, tvOS 10, watchOS 3, *)
+final public class UnfairLock : PopguideSDK.RawMutex {
+  public typealias MutexPrimitive = Darwin.os_unfair_lock
+  public init()
+  final public var underlyingMutex: Darwin.os_unfair_lock
+  final public func unbalancedLock()
+  final public func unbalancedTryLock() -> Swift.Bool
+  final public func unbalancedUnlock()
+  @objc deinit
+}
+@propertyWrapper @dynamicMemberLookup public struct ThreadSafe<Value> {
+  public init(wrappedValue: Value, mutex: any PopguideSDK.ScopedMutex = PThreadMutex())
+  public var wrappedValue: Value {
+    get
+    set
+  }
+  public subscript<Property>(dynamicMember keyPath: Swift.WritableKeyPath<Value, Property>) -> Property {
+    get
+    set
+  }
+  public subscript<Property>(dynamicMember keyPath: Swift.KeyPath<Value, Property>) -> Property {
+    get
+  }
+}
+extension PopguideSDK.VoxNetworkApi {
+  public func login(username: Swift.String, password: Swift.String) async throws -> PopguideSDK.ApiResponseLogin
+  #if compiler(>=5.3) && $NonescapableTypes
+  @discardableResult
+  public func handshake(progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.ApiResponseHandshake
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func popMapDetails(popMapId: Swift.String, languageId: Swift.String, detailsUrl: Swift.String, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.PopMapDetailsServer
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func popMapCollections(languageId: Swift.String, collectionsUrl: Swift.String, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.PopMapCollectionsResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func marketplace(marketplaceUrl: Swift.String, languageId: Swift.Int, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.MarketplaceResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func starPoints(starPointsUrl: Swift.String, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.StarPointsResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func messageBox(messageBoxUrl: Swift.String, languageId: Swift.Int, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.MessageBoxResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func advertSpots(advertSpotsUrl: Swift.String, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.AdvertSpotsResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func walks(walksUrl: Swift.String, languageId: Swift.Int, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.WalksResponse
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func urlMappings(groupId: Swift.String, progressHUD: (any PopguideSDK.SNProgressHUD)? = nil) async throws -> PopguideSDK.UrlMappingsResponse
+  #endif
+}
+public class VoxNetworkApi {
+  public init(app: PopguideSDK.VoxNetworkApi.App, secretToken: Swift.String, osVersion: Swift.String, appVersion: Swift.String, libVersion: Swift.String, installationId: Swift.String, language: Swift.String, isDebug: Swift.Bool = false, environment: PopguideSDK.VoxNetworkApi.Environment = .production)
+  public func updateHeaders(_ headers: [Swift.String : Swift.String])
+  public func removeHeader(key: Swift.String)
+  @objc deinit
+}
+extension PopguideSDK.VoxNetworkApi {
+  public enum Environment {
+    case production
+    case staging
+    public static func == (a: PopguideSDK.VoxNetworkApi.Environment, b: PopguideSDK.VoxNetworkApi.Environment) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+}
+extension PopguideSDK.VoxNetworkApi {
+  public class Configuration : PopguideSDK.NetworkConfigurable {
+    public var baseURL: Foundation.URL
+    public var headers: [Swift.String : Swift.String]
+    public var queryParameters: [Swift.String : Swift.String]
+    public var bodyParameters: [Swift.String : Any]
+    public var trustedDomains: [Swift.String]
+    public var requestTimeout: Foundation.TimeInterval
+    public var debug: Swift.Bool
+    public init(baseURL: Foundation.URL, headers: [Swift.String : Swift.String] = [:], queryParameters: [Swift.String : Swift.String] = [:], bodyParameters: [Swift.String : Any] = [:], trustedDomains: [Swift.String] = [], requestTimeout: Foundation.TimeInterval = 60, debug: Swift.Bool = true)
+    @objc deinit
+  }
+}
+extension PopguideSDK.VoxNetworkApi {
+  public enum ServiceError : Swift.Error {
+    case invalidApiCallForApp(PopguideSDK.VoxNetworkApi.App)
+    case invalidLoginToken
+    case unableToParse
+  }
+}
+extension PopguideSDK.VoxNetworkApi {
+  public struct App {
+    public let popguideDomain: Swift.String?
+    public let marketplaceDomain: Swift.String?
+    public let wavePackageDomain: Swift.String?
+  }
+}
+public struct DetailsBody : Swift.Codable {
+  public let marketplacesUrl: Swift.String?
+  public let messageBoxUrl: Swift.String?
+  public let popMapDetailsUrl: Swift.String?
+  public let walksUrl: [PopguideSDK.WalksUrlModel]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(marketplacesUrl: Swift.String?, messageBoxUrl: Swift.String?, popMapDetailsUrl: Swift.String?, walksUrl: [PopguideSDK.WalksUrlModel]?)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct HandshakeBody : Swift.Codable {
+  public let starPointsUrls: [Swift.String]?
+  public let advertSpotUrls: [Swift.String]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(starPointsUrls: [Swift.String]?, advertSpotUrls: [Swift.String]?)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
 }
 public struct AccountModel : Swift.Codable {
   public let id: Swift.Int?
@@ -93,14 +707,19 @@ public struct AccountModel : Swift.Codable {
   public let groupId: Swift.Int?
   public let privacyPolicyURL: Swift.String?
   public let termsURL: Swift.String?
+  public let hasAiAssistant: Swift.Bool?
+  public let tourDocuments: [PopguideSDK.TourDocumentModel]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int?, date: Swift.String?, marketPlaceEnabled: Swift.Bool?, advertisements: [Swift.String : PopguideSDK.AdvertisementModel]?, operatorName: Swift.String?, operatorActive: Swift.Bool?, operatorId: Swift.Int?, hashTag: Swift.String?, allowTfModel: Swift.Bool?, terminationDate: Swift.String?, brandingData: PopguideSDK.BrandingDataModel?, downloadOption: Swift.String?, groupId: Swift.Int?, privacyPolicyURL: Swift.String?, termsURL: Swift.String?, hasAiAssistant: Swift.Bool?, tourDocuments: [PopguideSDK.TourDocumentModel]?)
+  #endif
   public func getAdvertisementModels() -> [PopguideSDK.AdvertisementModel]
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct AdvertSpotModel : Swift.Codable {
   public let id: Swift.Int?
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let radius: Swift.Int?
   public let operatorId: Swift.Int?
   public let locationId: Swift.Int?
@@ -117,9 +736,12 @@ public struct AdvertSpotStarPointModel : Swift.Codable {
 }
 public struct AdvertisementModel : Swift.Codable {
   public let marketplace: PopguideSDK.MarketplaceModel?
-  public var accountId: Swift.Int!
-  public var popMapId: Swift.Int!
+  public var accountId: Swift.Int?
+  public var popMapId: Swift.Int?
   public let id: Swift.Int?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(marketplace: PopguideSDK.MarketplaceModel?, accountId: Swift.Int? = nil, popMapId: Swift.Int? = nil, id: Swift.Int?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -128,7 +750,9 @@ public enum FailureReason : Swift.String, Swift.Codable {
   case upgradeNeeded
   case unknownInstallation
   case none
+  #if compiler(>=5.3) && $NonescapableTypes
   public init?(rawValue: Swift.String)
+  #endif
   public typealias RawValue = Swift.String
   public var rawValue: Swift.String {
     get
@@ -137,7 +761,9 @@ public enum FailureReason : Swift.String, Swift.Codable {
 public enum ResponseAction : Swift.String, Swift.Codable {
   case actionUpdate
   case none
+  #if compiler(>=5.3) && $NonescapableTypes
   public init?(rawValue: Swift.String)
+  #endif
   public typealias RawValue = Swift.String
   public var rawValue: Swift.String {
     get
@@ -145,22 +771,40 @@ public enum ResponseAction : Swift.String, Swift.Codable {
 }
 public protocol BaseApiResponse : Swift.Decodable, Swift.Encodable {
   var success: Swift.Bool { get set }
+  #if compiler(>=5.3) && $NonescapableTypes
   var failure_reason: PopguideSDK.FailureReason? { get set }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
   var action: PopguideSDK.ResponseAction? { get set }
+  #endif
 }
-@_hasMissingDesignatedInitializers public class ApiResponseBase : PopguideSDK.BaseApiResponse {
+public struct ApiResponseBase : PopguideSDK.BaseApiResponse {
   public var success: Swift.Bool
   public var failure_reason: PopguideSDK.FailureReason?
   public var action: PopguideSDK.ResponseAction?
-  @objc deinit
   public func encode(to encoder: any Swift.Encoder) throws
-  required public init(from decoder: any Swift.Decoder) throws
+  public init(from decoder: any Swift.Decoder) throws
 }
-public struct HandshakeResponse : Swift.Codable {
+public enum FailureType : Swift.String, Swift.Codable {
+  case accountTerminated
+  case missingOperatorId
+  case missingInstallationId
+  case unknownInstallation
+  case none
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct ApiResponseHandshake : Swift.Codable {
   public let success: Swift.Bool?
   public let action: Swift.String?
   public let popMaps: [PopguideSDK.PopMapModel]?
   public let accounts: [PopguideSDK.AccountModel]?
+  public let failureReason: PopguideSDK.FailureType?
   public func getHomeLocationModels() -> [PopguideSDK.HomeLocationModel]
   public func getAdvertisementModels() -> [PopguideSDK.AdvertisementModel]
   public func encode(to encoder: any Swift.Encoder) throws
@@ -168,11 +812,24 @@ public struct HandshakeResponse : Swift.Codable {
 }
 public struct ApiResponseLogin : Swift.Codable {
   public let success: Swift.Bool?
+  public let resetToken: Swift.String?
   public let action: Swift.String?
   public let failure_reason: Swift.String?
+  public let error_data: Swift.String?
+  public let error_label: Swift.String?
   public let account: PopguideSDK.AccountModel?
   public let popMaps: [PopguideSDK.PopMapModel]?
-  public let advertSpots: [PopguideSDK.AdvertSpotModel]?
+  public let starPointsUrl: Swift.String?
+  public let advertSpotUrl: Swift.String?
+  public let marketplacesUrl: Swift.String?
+  public let messageBoxUrl: Swift.String?
+  public let popMapDetailsUrl: Swift.String?
+  public let walksUrl: [PopguideSDK.WalksUrlModel]?
+  public let mapStyleUrl: Swift.String?
+  public let textAiUrl: Swift.String?
+  public let translationAiUrl: Swift.String?
+  public let imageAiUrl: Swift.String?
+  public let popMapCollectionsUrl: Swift.String?
   public func getHomeLocationModels() -> [PopguideSDK.HomeLocationModel]
   public func getAdvertisementModels() -> [PopguideSDK.AdvertisementModel]
   public func encode(to encoder: any Swift.Encoder) throws
@@ -185,19 +842,58 @@ public struct BrandingDataModel : Swift.Codable {
   public let infoPageEnabled: Swift.Bool?
   public let infoPage: Swift.String?
   public let logo: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(headerText: Swift.String?, homeIcon: Swift.String?, starPointIcon: Swift.String?, infoPageEnabled: Swift.Bool?, infoPage: Swift.String?, logo: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
+public struct Coord : Swift.Codable {
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(lat: Swift.Double?, lng: Swift.Double?)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct DetailsResponseServer : Swift.Codable {
+  public let details: PopguideSDK.PopMapDetailsServer
+  public let marketPlaces: PopguideSDK.MarketplaceResponse?
+  public let walks: [PopguideSDK.WalkServer]?
+  public let messageBox: PopguideSDK.MessageBoxServer?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct GuideModel : Swift.Codable {
+  public let id: Swift.Int?
+  public let name: Swift.String?
+  public let coords: PopguideSDK.Coord?
+  public let email: Swift.String?
+  public let picture: Swift.String?
+  public let walkId: Swift.Int?
+  public let description: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct HandshakeResponseServer {
+  public let apiResponse: PopguideSDK.ApiResponseHandshake?
+  public let advertSpots: [PopguideSDK.AdvertSpotModel]?
+  public let starPoints: [PopguideSDK.StarPointServer]?
+}
 public struct HomeLocationModel : Swift.Codable {
   public let id: Swift.Int?
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let image: Swift.String?
   public let location: PopguideSDK.StarPointLocationModel?
   public let name: [Swift.String : Swift.String]?
   public let description: [Swift.String : Swift.String]?
   public var accountId: Swift.Int
   public var popMapId: Swift.Int
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int?, lat: Swift.Double?, lng: Swift.Double?, image: Swift.String?, location: PopguideSDK.StarPointLocationModel?, name: [Swift.String : Swift.String]?, description: [Swift.String : Swift.String]?, accountId: Swift.Int, popMapId: Swift.Int)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -206,6 +902,49 @@ public struct MarketplaceModel : Swift.Codable {
   public let links: [Swift.String : Swift.String]?
   public let advert: [Swift.String : Swift.String]?
   public let points: [Swift.String : PopguideSDK.PoiAdvertModel]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(link: Swift.String?, links: [Swift.String : Swift.String]?, advert: [Swift.String : Swift.String]?, points: [Swift.String : PopguideSDK.PoiAdvertModel]?)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct MarketplaceResponse : Swift.Codable {
+  public var success: Swift.Bool
+  public var failure_reason: Swift.String?
+  public var action: Swift.String?
+  public let marketplaces: [Swift.Int : [Swift.String : [Swift.Int : PopguideSDK.PopguideMarketPlacePointServer]]]?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct StarPointsResponse : Swift.Codable {
+  public var success: Swift.Bool
+  public var failure_reason: Swift.String?
+  public var action: Swift.String?
+  public var starPoints: [PopguideSDK.StarPointServer]?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct MessageBoxResponse : Swift.Codable {
+  public var success: Swift.Bool
+  public var failure_reason: Swift.String?
+  public var action: Swift.String?
+  public let messageBox: PopguideSDK.MessageBoxServer?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct AdvertSpotsResponse : Swift.Codable {
+  public var success: Swift.Bool
+  public var failure_reason: Swift.String?
+  public var action: Swift.String?
+  public let advertSpots: [PopguideSDK.AdvertSpotModel]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct WalksResponse : Swift.Codable {
+  public var success: Swift.Bool
+  public var failure_reason: Swift.String?
+  public var action: Swift.String?
+  public let walks: [PopguideSDK.WalkServer]
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -216,6 +955,9 @@ public struct PackageModel : Swift.Codable {
   public let languageName: Swift.String?
   public let popMapTitle: Swift.String?
   public let languageTitle: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(languageId: Swift.Int?, languageTag: Swift.String?, languageFlag: Swift.String?, languageName: Swift.String?, popMapTitle: Swift.String?, languageTitle: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -223,10 +965,59 @@ public struct PoiAdvertModel : Swift.Codable {
   public let link: Swift.String?
   public let links: [Swift.String : Swift.String]?
   public let advert: [Swift.String : Swift.String]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(link: Swift.String?, links: [Swift.String : Swift.String]?, advert: [Swift.String : Swift.String]?)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PopMapCollectionsResponse : Swift.Codable {
+  public var success: Swift.Bool?
+  public var action: Swift.String?
+  public var popMapCollections: [PopguideSDK.PopMapCollectionDTO]?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PopMapCollectionDTO : Swift.Codable {
+  public var id: Swift.Int?
+  public var version: Swift.String?
+  public var coverPicture: Swift.String?
+  public var poisCount: Swift.Int?
+  public var audioToursCount: Swift.Int?
+  public var popMaps: [PopguideSDK.PopMapCollectionDTO.PopMapCollectionDetailDTO]?
+  public var languages: [PopguideSDK.PopMapCollectionDTO.PopMapLanguageDTO]?
+  public struct PopMapLanguageDTO : Swift.Codable {
+    public var id: Swift.Int?
+    public var name: Swift.String?
+    public var displayName: Swift.String?
+    public var tag: Swift.String?
+    public var flag: Swift.String?
+    public var collectionTitle: Swift.String?
+    public var totalSize: Swift.Int?
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public struct PopMapCollectionDetailDTO : Swift.Codable {
+    public var id: Swift.Int?
+    public var type: Swift.String?
+    public var title: Swift.String?
+    public var coverImage: Swift.String?
+    public var poisCount: Swift.Int?
+    public var duration: Swift.Int?
+    public var description: Swift.String?
+    public var version: Swift.String?
+    public var autoplay: Swift.Bool?
+    public var popMapView: Swift.String?
+    public var uid: Swift.String?
+    public var level_count: Swift.Int?
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct AudioServer : Swift.Codable {
+  public let id: Swift.Int?
   public let pos: Swift.Int?
   public let file: Swift.String?
   public let name: Swift.String?
@@ -234,22 +1025,26 @@ public struct AudioServer : Swift.Codable {
   public let title: Swift.String?
   public let fileSize: Swift.Int64?
   public let mimeType: Swift.String?
-  public init(pos: Swift.Int? = nil, file: Swift.String? = nil, name: Swift.String? = nil, type: Swift.String? = nil, title: Swift.String? = nil, fileSize: Swift.Int64? = nil, mimeType: Swift.String? = nil)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, pos: Swift.Int? = nil, file: Swift.String? = nil, name: Swift.String? = nil, type: Swift.String? = nil, title: Swift.String? = nil, fileSize: Swift.Int64? = nil, mimeType: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct BeaconServer : Swift.Codable {
-  public let rssi: Swift.String?
+  public let rssi: Swift.Int?
   public let uuid: Swift.String?
   public let minor: Swift.String?
   public let type: Swift.String?
-  public init(rssi: Swift.String? = nil, uuid: Swift.String? = nil, minor: Swift.String? = nil, type: Swift.String? = nil)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(rssi: Swift.Int? = nil, uuid: Swift.String? = nil, minor: Swift.String? = nil, type: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct CategoryServer : Swift.Codable {
   public let id: Swift.Int
-  public var name: [Swift.Int : Swift.String]
+  public var name: [Swift.String : Swift.String]
   public let icon: Swift.String?
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
@@ -261,16 +1056,21 @@ public struct ClusterPointIconServer : Swift.Codable {
   public let type: Swift.String?
   public let brandable: Swift.Bool?
   public let fileSize: Swift.Int64?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, file: Swift.String? = nil, name: Swift.String? = nil, type: Swift.String? = nil, brandable: Swift.Bool? = nil, fileSize: Swift.Int64? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct ClusterPointServer : Swift.Codable {
   public let count: Swift.String?
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let cc: Swift.Int?
   public let icon: PopguideSDK.ClusterPointIconServer?
-  public init(count: Swift.String? = nil, lat: Swift.String? = nil, lng: Swift.String? = nil, cc: Swift.Int? = nil, icon: PopguideSDK.ClusterPointIconServer? = nil)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(count: Swift.String? = nil, lat: Swift.Double? = nil, lng: Swift.Double? = nil, cc: Swift.Int? = nil, icon: PopguideSDK.ClusterPointIconServer? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -279,7 +1079,9 @@ public struct ContentsServer : Swift.Codable {
   public let images: [PopguideSDK.ImageServer]?
   public let texts: [PopguideSDK.TextServer]?
   public let videos: [PopguideSDK.VideoServer]?
-  public init(audios: [PopguideSDK.AudioServer], images: [PopguideSDK.ImageServer], texts: [PopguideSDK.TextServer], videos: [PopguideSDK.VideoServer])
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(audios: [PopguideSDK.AudioServer]? = nil, images: [PopguideSDK.ImageServer]? = nil, texts: [PopguideSDK.TextServer]? = nil, videos: [PopguideSDK.VideoServer]? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -291,22 +1093,15 @@ public struct CountryServer : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct DetailsResponseServer : PopguideSDK.BaseApiResponse {
-  public var success: Swift.Bool
-  public var failure_reason: PopguideSDK.FailureReason?
-  public var action: PopguideSDK.ResponseAction?
-  public let popMapDetails: PopguideSDK.PopMapDetailsServer?
-  public var starPoints: [PopguideSDK.StarPointServer]?
-  public var marketplaces: [Swift.Int : [Swift.String : [Swift.Int : PopguideSDK.PopguideMarketPlacePointServer]]]
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
 public struct HeaderServer : Swift.Codable {
   public let audio: PopguideSDK.AudioServer?
   public let description: Swift.String?
   public let image: PopguideSDK.ImageServer?
   public let title: Swift.String?
   public let showHeader: Swift.Bool?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(audio: PopguideSDK.AudioServer? = nil, description: Swift.String? = nil, image: PopguideSDK.ImageServer? = nil, title: Swift.String, showHeader: Swift.Bool? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -317,7 +1112,9 @@ public struct IconServer : Swift.Codable {
   public let id: Swift.Int?
   public let name: Swift.String?
   public let type: Swift.String?
-  public init(brandable: Swift.Bool, file: Swift.String, fileSize: Swift.Int64, id: Swift.Int, name: Swift.String, type: Swift.String)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(brandable: Swift.Bool? = nil, file: Swift.String? = nil, fileSize: Swift.Int64? = nil, id: Swift.Int? = nil, name: Swift.String? = nil, type: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -328,10 +1125,13 @@ public struct ImageServer : Swift.Codable {
   public let fileSize: Swift.Int64?
   public let height: Swift.Int64?
   public let mimeType: Swift.String?
+  public let author: Swift.String?
   public let name: Swift.String?
   public let type: Swift.String?
   public let width: Swift.Int64?
-  public init(id: Swift.Int64? = nil, pos: Swift.Int? = nil, file: Swift.String? = nil, fileSize: Swift.Int64? = nil, height: Swift.Int64? = nil, mimeType: Swift.String? = nil, name: Swift.String? = nil, type: Swift.String? = nil, width: Swift.Int64? = nil)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int64? = nil, pos: Swift.Int? = nil, file: Swift.String? = nil, fileSize: Swift.Int64? = nil, height: Swift.Int64? = nil, mimeType: Swift.String? = nil, name: Swift.String? = nil, type: Swift.String? = nil, width: Swift.Int64? = nil, author: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -353,7 +1153,11 @@ public struct LevelServer : Swift.Codable {
   public let clustering: [Swift.String : [PopguideSDK.ClusterPointServer]]?
   public let description: Swift.String?
   public var unityData: PopguideSDK.LegacyUnityDataServer?
-  public init(id: Swift.Int, location: PopguideSDK.LocationServer? = nil, name: Swift.String, title: Swift.String, originalAreaId: Swift.Int, links: [PopguideSDK.LinkServer]? = nil, points: [PopguideSDK.PointServer]? = nil, poiCount: Swift.Int? = nil, backgroundImage: PopguideSDK.ImageServer? = nil, pos: Swift.Int, routes: [PopguideSDK.RouteServer]? = nil, transportMap: PopguideSDK.ImageServer? = nil, allowNavigation: Swift.Bool? = nil, type: PopguideSDK.LevelServer.LevelType?, clustering: [Swift.String : [PopguideSDK.ClusterPointServer]]? = [:], description: Swift.String? = nil, unityData: PopguideSDK.LegacyUnityDataServer? = nil)
+  public let showPointNum: Swift.Bool?
+  public let listType: PopguideSDK.LevelServer.ListType?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, location: PopguideSDK.LocationServer? = nil, name: Swift.String? = nil, title: Swift.String? = nil, originalAreaId: Swift.Int? = nil, links: [PopguideSDK.LinkServer]? = nil, points: [PopguideSDK.PointServer]? = nil, poiCount: Swift.Int? = nil, backgroundImage: PopguideSDK.ImageServer? = nil, pos: Swift.Int? = nil, routes: [PopguideSDK.RouteServer]? = nil, transportMap: PopguideSDK.ImageServer? = nil, allowNavigation: Swift.Bool? = nil, type: PopguideSDK.LevelServer.LevelType? = nil, clustering: [Swift.String : [PopguideSDK.ClusterPointServer]]? = nil, description: Swift.String? = nil, unityData: PopguideSDK.LegacyUnityDataServer? = nil, showPointNum: Swift.Bool? = nil, listType: PopguideSDK.LevelServer.ListType? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -362,7 +1166,21 @@ extension PopguideSDK.LevelServer {
     case levelIndoor
     case levelOutdoor
     case levelUnity
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public enum ListType : Swift.String, Swift.Codable {
+    case names
+    case thumbnails
+    case icons
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
@@ -373,13 +1191,31 @@ public struct LinkServer : Swift.Codable {
   public let id: Swift.Int?
   public let x: Swift.Double?
   public let y: Swift.Double?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let icon: PopguideSDK.IconServer?
   public let levelOut: Swift.Int?
   public let popupColor: Swift.String?
-  public let viewToOpen: Swift.String?
-  public init(id: Swift.Int? = nil, x: Swift.Double? = nil, y: Swift.Double? = nil, icon: PopguideSDK.IconServer, levelOut: Swift.Int, popupColor: Swift.String? = nil, viewToOpen: Swift.String? = nil)
+  public let viewToOpen: PopguideSDK.LinkServer.LinkType?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, x: Swift.Double? = nil, y: Swift.Double? = nil, lat: Swift.Double? = nil, lng: Swift.Double? = nil, icon: PopguideSDK.IconServer, levelOut: Swift.Int, popupColor: Swift.String? = nil, viewToOpen: PopguideSDK.LinkServer.LinkType? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
+}
+extension PopguideSDK.LinkServer {
+  public enum LinkType : Swift.String, Swift.Codable {
+    case list
+    case map
+    case list_no_level_switch
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init?(rawValue: Swift.String)
+    #endif
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
 }
 public struct LocationServer : Swift.Codable {
   public let bboxMaxLat: Swift.Double?
@@ -388,14 +1224,18 @@ public struct LocationServer : Swift.Codable {
   public let bboxMinLng: Swift.Double?
   public let country: PopguideSDK.CountryServer?
   public let id: Swift.Int?
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let mapPackageCode: Swift.String?
   public let mapSdk: Swift.String?
   public let name: Swift.String?
   public let title: Swift.String?
   public let type: Swift.String?
-  public init(bboxMaxLat: Swift.Double, bboxMaxLng: Swift.Double, bboxMinLat: Swift.Double, bboxMinLng: Swift.Double, country: PopguideSDK.CountryServer? = nil, id: Swift.Int, lat: Swift.String, lng: Swift.String, mapPackageCode: Swift.String? = nil, mapSdk: Swift.String? = nil, name: Swift.String? = nil, title: Swift.String? = nil, type: Swift.String? = nil)
+  public let navigationTarUrl: Swift.String?
+  public let navigationTarSize: Swift.Int64?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(bboxMaxLat: Swift.Double, bboxMaxLng: Swift.Double, bboxMinLat: Swift.Double, bboxMinLng: Swift.Double, country: PopguideSDK.CountryServer? = nil, id: Swift.Int, lat: Swift.Double, lng: Swift.Double, mapPackageCode: Swift.String? = nil, mapSdk: Swift.String? = nil, name: Swift.String? = nil, title: Swift.String? = nil, type: Swift.String? = nil, navigationTarUrl: Swift.String? = nil, navigationTarSize: Swift.Int64? = 0)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -417,6 +1257,7 @@ public struct PointServer : Swift.Codable {
   public let contents: PopguideSDK.ContentsServer?
   public let icon: PopguideSDK.IconServer?
   public let listIcon: PopguideSDK.IconServer?
+  public let iconSize: Swift.String?
   public let id: Swift.Int?
   public let title: Swift.String?
   public let name: Swift.String?
@@ -426,8 +1267,8 @@ public struct PointServer : Swift.Codable {
   public let pos: Swift.Int?
   public let radius: Swift.Int?
   public let type: PopguideSDK.PointServer.PointType?
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+  public let lat: Swift.Double?
+  public let lng: Swift.Double?
   public let x: Swift.Double?
   public let y: Swift.Double?
   public let beacon: PopguideSDK.BeaconServer?
@@ -437,7 +1278,10 @@ public struct PointServer : Swift.Codable {
   public let poiType: PopguideSDK.PointServer.PoiType?
   public let viewType: PopguideSDK.PointServer.ViewType?
   public let slideshowSeconds: [Swift.Int]?
-  public init(bearing: Swift.Double? = nil, contents: PopguideSDK.ContentsServer? = nil, icon: PopguideSDK.IconServer? = nil, listIcon: PopguideSDK.IconServer? = nil, id: Swift.Int? = nil, title: Swift.String? = nil, name: Swift.String? = nil, num: Swift.Int? = nil, showNum: PopguideSDK.PointServer.ShowNum? = nil, originalPointId: Swift.Int? = nil, pos: Swift.Int? = nil, radius: Swift.Int? = nil, type: PopguideSDK.PointServer.PointType? = nil, lat: Swift.String? = nil, lng: Swift.String? = nil, x: Swift.Double? = nil, y: Swift.Double? = nil, beacon: PopguideSDK.BeaconServer? = nil, artist: Swift.String? = nil, room: Swift.String? = nil, date: Swift.String? = nil, poiType: PopguideSDK.PointServer.PoiType? = nil, viewType: PopguideSDK.PointServer.ViewType? = nil, slideshowSeconds: [Swift.Int]? = nil)
+  public let thumbnail: PopguideSDK.ImageServer?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(bearing: Swift.Double? = nil, contents: PopguideSDK.ContentsServer? = nil, icon: PopguideSDK.IconServer? = nil, listIcon: PopguideSDK.IconServer? = nil, iconSize: Swift.String? = nil, id: Swift.Int? = nil, title: Swift.String? = nil, name: Swift.String? = nil, num: Swift.Int? = nil, showNum: PopguideSDK.PointServer.ShowNum? = nil, originalPointId: Swift.Int? = nil, pos: Swift.Int? = nil, radius: Swift.Int? = nil, type: PopguideSDK.PointServer.PointType? = nil, lat: Swift.Double? = nil, lng: Swift.Double? = nil, x: Swift.Double? = nil, y: Swift.Double? = nil, beacon: PopguideSDK.BeaconServer? = nil, artist: Swift.String? = nil, room: Swift.String? = nil, date: Swift.String? = nil, poiType: PopguideSDK.PointServer.PoiType? = nil, viewType: PopguideSDK.PointServer.ViewType? = nil, slideshowSeconds: [Swift.Int]? = nil, thumbnail: PopguideSDK.ImageServer? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -445,7 +1289,9 @@ extension PopguideSDK.PointServer {
   public enum PointType : Swift.String, Swift.Codable {
     case pointIndoor
     case pointOutdoor
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
@@ -455,7 +1301,9 @@ extension PopguideSDK.PointServer {
     case all
     case map
     case list
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
@@ -465,7 +1313,9 @@ extension PopguideSDK.PointServer {
     case all
     case no
     case noMap
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
@@ -485,7 +1335,9 @@ extension PopguideSDK.PointServer {
     case mosque
     case temple
     case shrine
+    #if compiler(>=5.3) && $NonescapableTypes
     public init?(rawValue: Swift.String)
+    #endif
     public typealias RawValue = Swift.String
     public var rawValue: Swift.String {
       get
@@ -505,22 +1357,22 @@ public struct PopMapDetailsServer : Swift.Codable {
   public let publicName: Swift.String?
   public let type: Swift.String?
   public let uid: Swift.String?
-  public let walks: [PopguideSDK.WalkServer]?
-  public let messageBox: PopguideSDK.MessageBoxServer?
   public let slideshowTemplate: Swift.String?
-  public let mapStyleUrl: Swift.String?
+  public let listOnly: Swift.Bool?
   public let quiz: PopguideSDK.QuizServer?
   public var unityData: PopguideSDK.UnityDataServer?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, header: PopguideSDK.HeaderServer? = nil, iconSetting: Swift.String? = nil, languageId: Swift.Int? = nil, levels: [PopguideSDK.LevelServer]? = nil, mapPackageCode: Swift.String? = nil, name: Swift.String? = nil, popMapTotalSize: PopguideSDK.PopMapTotalSizeServer? = nil, popMapView: Swift.String? = nil, publicName: Swift.String? = nil, type: Swift.String? = nil, uid: Swift.String? = nil, slideshowTemplate: Swift.String? = nil, listOnly: Swift.Bool? = nil, quiz: PopguideSDK.QuizServer? = nil, unityData: PopguideSDK.UnityDataServer? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
-}
-extension PopguideSDK.PopMapDetailsServer {
-  public func localFile(localFile: any PopguideSDK.LocalFileCheckable) -> Foundation.URL?
 }
 public struct PopMapTotalSizeServer : Swift.Codable {
   public var audio: Swift.Int64
   public var image: Swift.Int64
   public var map: Swift.Int64
+  public var video: Swift.Int64?
+  public init(audio: Swift.Int64, image: Swift.Int64, map: Swift.Int64, video: Swift.Int64 = 0)
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -545,7 +1397,9 @@ public struct RouteServer : Swift.Codable {
   public let type: Swift.String?
   public let duration: Swift.Int?
   public let routeType: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
   public init(color: Swift.String? = nil, geoCoords: [[Swift.Double]]? = nil, id: Swift.Int? = nil, name: Swift.String? = nil, pos: Swift.Int? = nil, title: Swift.String? = nil, type: Swift.String? = nil, duration: Swift.Int? = nil, routeType: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -560,8 +1414,8 @@ public struct StarPointServer : Swift.Codable {
   public var email: Swift.String?
   public var phone: Swift.String?
   public var images: [Swift.String]?
-  public var name: [Swift.Int : Swift.String]
-  public var description: [Swift.Int : Swift.String]
+  public var name: [Swift.String : Swift.String]?
+  public var description: [Swift.String : Swift.String]?
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -575,37 +1429,22 @@ public struct StopServer : Swift.Codable {
   public let coords: PopguideSDK.Coord?
   public let address: Swift.String?
   public let startTime: [Swift.String]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int, pos: Swift.Int? = nil, image: Swift.String? = nil, name: Swift.String? = nil, title: Swift.String? = nil, description: Swift.String? = nil, coords: PopguideSDK.Coord? = nil, address: Swift.String? = nil, startTime: [Swift.String]? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
 public struct TextServer : Swift.Codable {
+  public let id: Swift.Int?
   public let descr: Swift.String?
   public let name: Swift.String?
   public let pos: Swift.Int?
   public let title: Swift.String?
   public let type: Swift.String?
-  public init(descr: Swift.String, name: Swift.String, pos: Swift.Int, title: Swift.String, type: Swift.String)
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public struct UnityDataServer : Swift.Codable {
-  public var model: PopguideSDK.UnityDataModel?
-  public let initialLevel: Swift.Int?
-  public var levels: [PopguideSDK.UnityDataLevelServer]?
-  public init(model: PopguideSDK.UnityDataModel?, initialLevel: Swift.Int?, levels: [PopguideSDK.UnityDataLevelServer]? = nil)
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public struct LegacyUnityDataServer : Swift.Codable {
-  public var level: PopguideSDK.UnityDataLevelServer?
-  public init(level: PopguideSDK.UnityDataLevelServer? = nil)
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public struct UnityDataModel : Swift.Codable, Swift.Sendable {
-  public var bundlePathWebgl: Swift.String?
-  public var bundleName: Swift.String?
-  public init(bundlePathWebgl: Swift.String?, bundleName: Swift.String?)
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, descr: Swift.String? = nil, name: Swift.String? = nil, pos: Swift.Int? = nil, title: Swift.String? = nil, type: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -621,6 +1460,9 @@ public struct QuizHeaderServer : Swift.Codable {
   public let audio: Swift.String
   public let image: Swift.String?
   public let button: Swift.String
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(title: Swift.String, description: Swift.String, audio: Swift.String, image: Swift.String? = nil, button: Swift.String)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -652,7 +1494,9 @@ public struct QuizItemServer : Swift.Codable {
   public let detailLongDescription: Swift.String?
   public var detailLongDescriptionAudioClip: Swift.String?
   public var galleryItems: [PopguideSDK.QuizGalleryItemServer]?
+  #if compiler(>=5.3) && $NonescapableTypes
   public mutating func changeHintsPaths(hint2_clip: Swift.String?, hint3_image: Swift.String?, detail_clip: Swift.String?, solution_image: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -664,6 +1508,9 @@ public struct QuizServer : Swift.Codable {
   public let quizStartButton: Swift.String?
   public let quizHeader: PopguideSDK.QuizHeaderServer?
   public let quizItems: [PopguideSDK.QuizItemServer]?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int, name: Swift.String? = nil, title: Swift.String? = nil, quizCta: Swift.String? = nil, quizStartButton: Swift.String? = nil, quizHeader: PopguideSDK.QuizHeaderServer? = nil, quizItems: [PopguideSDK.QuizItemServer]? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -674,7 +1521,42 @@ public struct UnityDataLevelServer : Swift.Codable {
   public var title: Swift.String?
   public var points: [PopguideSDK.UnityPointServer]?
   public var elevation: Swift.Double?
-  public init(id: Swift.Int? = nil, map: PopguideSDK.UnityMapServer? = nil, name: Swift.String? = nil, title: Swift.String? = nil, points: [PopguideSDK.UnityPointServer]? = nil, elevation: Swift.Double? = nil)
+  public var cameraMode: Swift.String?
+  public var drawMode: Swift.String?
+  public var model: PopguideSDK.UnityDataModel?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int? = nil, map: PopguideSDK.UnityMapServer? = nil, name: Swift.String? = nil, title: Swift.String? = nil, points: [PopguideSDK.UnityPointServer]? = nil, elevation: Swift.Double? = nil, cameraMode: Swift.String? = nil, model: PopguideSDK.UnityDataModel? = nil, drawMode: Swift.String? = nil)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct UnityDataServer : Swift.Codable {
+  public var initialLevel: Swift.Int?
+  public var levels: [PopguideSDK.UnityDataLevelServer]?
+  public let localizations: [Swift.String : Swift.String]?
+  public var model: PopguideSDK.UnityDataModel?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(initialLevel: Swift.Int?, levels: [PopguideSDK.UnityDataLevelServer]? = nil, localizations: [Swift.String : Swift.String]? = nil, model: PopguideSDK.UnityDataModel? = nil)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct LegacyUnityDataServer : Swift.Codable {
+  public var level: PopguideSDK.UnityDataLevelServer?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(level: PopguideSDK.UnityDataLevelServer? = nil)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct UnityDataModel : Swift.Codable, Swift.Sendable {
+  public var bundlePathWebgl: Swift.String?
+  public var bundleName: Swift.String?
+  public var iosBundle: Swift.String?
+  public var osxBundle: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(bundlePathWebgl: Swift.String?, bundleName: Swift.String?, iosBundle: Swift.String?, osxBundle: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -689,6 +1571,9 @@ public struct UnityMapServer : Swift.Codable {
   public let tesselateSamplingStepSize: Swift.Double?
   public let tesselateMaxTanAngleDeviation: Swift.Int64?
   public var path: PopguideSDK.UnityPathServer?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(roof: Swift.String? = nil, floor: Swift.String? = nil, blocks: Swift.String? = nil, wallHeight: Swift.Int64? = nil, tesselateStepDistance: Swift.Int64, tesselatePixelPerUnit: Swift.Int64, tesselateMaxCordDeviation: Swift.Int64, tesselateSamplingStepSize: Swift.Double, tesselateMaxTanAngleDeviation: Swift.Int64, path: PopguideSDK.UnityPathServer? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -699,22 +1584,11 @@ public struct UnityPathServer : Swift.Codable {
   public let pathSegmentLength: Swift.Double?
   public let pathAnimationSpeed: Swift.Double?
   public let pathPointsMaxDistance: Swift.Double?
-  public var pathStartPin: PopguideSDK.UnityPathStartPinServer?
+  public var pathStartPin: PopguideSDK.UnityPointServer?
   public let pathCtaTapForDirections: Swift.String?
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public struct UnityPathStartPinServer : Swift.Codable {
-  public let name: Swift.String?
-  public let title: Swift.String?
-  public let titleColor: Swift.String?
-  public let titleBackgroundColor: Swift.String?
-  public var pinImage: Swift.String?
-  public let pinColor: Swift.String?
-  public let pinForegroundImage: Swift.String?
-  public let pinForegroundColor: Swift.String?
-  public let pinSizeAtMinZoom: Swift.Double?
-  public let pinSizeAtMaxZoom: Swift.Double?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(pathColor: Swift.String? = nil, pathWidth: Swift.Double? = nil, pathPoints: Swift.String? = nil, pathSegmentLength: Swift.Double? = nil, pathAnimationSpeed: Swift.Double? = nil, pathPointsMaxDistance: Swift.Double? = nil, pathStartPin: PopguideSDK.UnityPointServer? = nil, pathCtaTapForDirections: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -723,17 +1597,48 @@ public struct UnityPointServer : Swift.Codable {
   public let y: Swift.Int64?
   public let id: Swift.Int64?
   public let num: Swift.Int64?
+  public let type: PopguideSDK.UnityPointType?
+  public var image: Swift.String?
   public let name: Swift.String?
   public let title: Swift.String?
   public let titleColor: Swift.String?
   public let titleBackgroundColor: Swift.String?
   public var pinImage: Swift.String?
   public let pinColor: Swift.String?
-  public let pinForegroundImage: Swift.String?
+  public var pinForegroundImage: Swift.String?
   public let pinForegroundColor: Swift.String?
   public let pinNumberColor: Swift.String?
   public let pinSizeAtMinZoom: Swift.Float?
   public let pinSizeAtMaxZoom: Swift.Float?
+  public var poiAction: PopguideSDK.PoiAction?
+  public let shadow: Swift.Bool?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(x: Swift.Int64, y: Swift.Int64, id: Swift.Int64, num: Swift.Int64? = nil, type: PopguideSDK.UnityPointType?, image: Swift.String? = nil, name: Swift.String, title: Swift.String, titleColor: Swift.String? = nil, titleBackgroundColor: Swift.String? = nil, pinImage: Swift.String, pinColor: Swift.String? = nil, pinForegroundImage: Swift.String? = nil, pinForegroundColor: Swift.String? = nil, pinNumberColor: Swift.String? = nil, pinSizeAtMinZoom: Swift.Float? = nil, pinSizeAtMaxZoom: Swift.Float? = nil, poiAction: PopguideSDK.PoiAction? = nil, shadow: Swift.Bool? = false)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum UnityPointType : Swift.String, Swift.Codable {
+  case model, map
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct PoiAction : Swift.Codable {
+  public let title: Swift.String?
+  public let titleColor: Swift.String?
+  public let imageColor: Swift.String?
+  public let backgroundColor: Swift.String?
+  public let name: Swift.String?
+  public let param: Swift.String?
+  public var image: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(title: Swift.String? = nil, titleColor: Swift.String? = nil, imageColor: Swift.String? = nil, backgroundColor: Swift.String? = nil, name: Swift.String? = nil, param: Swift.String? = nil, image: Swift.String? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -746,7 +1651,9 @@ public struct VideoServer : Swift.Codable {
   public let title: Swift.String?
   public let fileSize: Swift.Int64?
   public let mimeType: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
   public init(id: Swift.Int? = nil, pos: Swift.Int? = 0, remoteUrl: Swift.String, name: Swift.String, type: Swift.String, title: Swift.String, fileSize: Swift.Int64 = 0, mimeType: Swift.String)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -754,7 +1661,7 @@ public struct WalkServer : Swift.Codable {
   public let id: Swift.Int?
   public let name: Swift.String?
   public let gpxTrack: Swift.String?
-  public let geoCoords: [[Swift.Double]]?
+  public let geoCoords: [[Swift.String]]?
   public let color: Swift.String?
   public let popMapId: Swift.Int?
   public let stops: [PopguideSDK.StopServer]?
@@ -762,6 +1669,9 @@ public struct WalkServer : Swift.Codable {
   public let expirationDate: Swift.String?
   public let seatsLimit: Swift.Int?
   public let upsell: Swift.Int?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int, name: Swift.String? = nil, gpxTrack: Swift.String? = nil, geoCoords: [[Swift.String]]? = [], color: Swift.String? = nil, popMapId: Swift.Int, stops: [PopguideSDK.StopServer]? = [], totalTravelTime: Swift.Int, expirationDate: Swift.String, seatsLimit: Swift.Int, upsell: Swift.Int? = nil)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -769,6 +1679,9 @@ public struct PopMapLocationModel : Swift.Codable {
   public let id: Swift.Int?
   public let name: [Swift.String : Swift.String]?
   public let map_sdk: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int?, name: [Swift.String : Swift.String]?, map_sdk: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -789,18 +1702,18 @@ public struct PopMapModel : Swift.Codable {
   public let home: PopguideSDK.HomeLocationModel?
   public let tourDocuments: [PopguideSDK.TourDocumentModel]?
   public let poi_count: Swift.Int?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int?, ratingScore: Swift.Double?, coverPicture: Swift.String?, name: Swift.String?, uid: Swift.String?, autoplay: Swift.Bool?, accountId: Swift.Int?, version: Swift.String?, locations: [PopguideSDK.PopMapLocationModel]?, mapPackageCode: Swift.String?, type: Swift.String?, popMapView: Swift.String?, packages: [PopguideSDK.PackageModel]?, home: PopguideSDK.HomeLocationModel?, tourDocuments: [PopguideSDK.TourDocumentModel]?, poi_count: Swift.Int?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
-}
-@_hasMissingDesignatedInitializers public class PopMapTotalSizeModel {
-  public var audio: Swift.Int
-  public var image: Swift.Int
-  public var map: Swift.Int
-  @objc deinit
 }
 public struct StarPointLocationModel : Swift.Codable {
   public let id: Swift.Int?
   public let name: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(id: Swift.Int?, name: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -811,25 +1724,29 @@ public struct TourDocumentModel : Swift.Codable {
   public let type: Swift.String?
   public let uid: Swift.String?
   public let version: Swift.String?
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(file: [Swift.String : Swift.String]?, name: [Swift.String : Swift.String]?, url: [Swift.String : Swift.String]?, type: Swift.String?, uid: Swift.String?, version: Swift.String?)
+  #endif
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct StopModel : Swift.Codable {
-  public let id: Swift.Int?
-  public let pos: Swift.Int?
-  public let image: Swift.String?
-  public let title: Swift.String?
-  public let stopDescription: Swift.String?
-  public let coords: PopguideSDK.Coord?
-  public let address: Swift.String?
-  public let startTime: [Swift.String]?
-  public var walkId: Swift.Int?
+public struct UrlMappingsResponse : Swift.Codable {
+  public let success: Swift.Bool?
+  public let action: Swift.String?
+  public let popMapDetailsURL: Swift.String?
+  public let starPointsURL: Swift.String?
+  public let advertSpotsURL: Swift.String?
+  public let marketplacesURL: Swift.String?
+  public let messageBoxURL: Swift.String?
+  public let allGuidesGpsPositionURL: Swift.String?
+  public let walksUrls: [PopguideSDK.WalksUrlModel]?
+  public let mapStyleURL: Swift.String?
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct Coord : Swift.Codable {
-  public let lat: Swift.String?
-  public let lng: Swift.String?
+public struct WalksUrlModel : Swift.Codable {
+  public let popMapId: Swift.Int?
+  public let walksUrl: Swift.String?
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
@@ -838,17 +1755,40 @@ extension PopguideSDK.PopguideManager.Language : Swift.Hashable {}
 extension PopguideSDK.PopguideManager.Language : Swift.RawRepresentable {}
 extension PopguideSDK.PopguideManager.Environment : Swift.Equatable {}
 extension PopguideSDK.PopguideManager.Environment : Swift.Hashable {}
+extension PopguideSDK.PopguideManager.Environment : Swift.RawRepresentable {}
 extension PopguideSDK.DownloadType : Swift.Equatable {}
 extension PopguideSDK.DownloadType : Swift.Hashable {}
+extension PopguideSDK.DownloadTask.DownloadState : Swift.Equatable {}
+extension PopguideSDK.DownloadTask.DownloadState : Swift.Hashable {}
+extension PopguideSDK.ApiClient.MiddlewarePostRequestResult : Swift.Equatable {}
+extension PopguideSDK.ApiClient.MiddlewarePostRequestResult : Swift.Hashable {}
+extension PopguideSDK.UploadTask.UploadState : Swift.Equatable {}
+extension PopguideSDK.UploadTask.UploadState : Swift.Hashable {}
+extension PopguideSDK.HTTPMethod : Swift.Equatable {}
+extension PopguideSDK.HTTPMethod : Swift.Hashable {}
+extension PopguideSDK.HTTPMethod : Swift.RawRepresentable {}
+extension PopguideSDK.PThreadMutex.PThreadMutexType : Swift.Equatable {}
+extension PopguideSDK.PThreadMutex.PThreadMutexType : Swift.Hashable {}
+extension PopguideSDK.VoxNetworkApi.Environment : Swift.Equatable {}
+extension PopguideSDK.VoxNetworkApi.Environment : Swift.Hashable {}
 extension PopguideSDK.FailureReason : Swift.Equatable {}
 extension PopguideSDK.FailureReason : Swift.Hashable {}
 extension PopguideSDK.FailureReason : Swift.RawRepresentable {}
 extension PopguideSDK.ResponseAction : Swift.Equatable {}
 extension PopguideSDK.ResponseAction : Swift.Hashable {}
 extension PopguideSDK.ResponseAction : Swift.RawRepresentable {}
+extension PopguideSDK.FailureType : Swift.Equatable {}
+extension PopguideSDK.FailureType : Swift.Hashable {}
+extension PopguideSDK.FailureType : Swift.RawRepresentable {}
 extension PopguideSDK.LevelServer.LevelType : Swift.Equatable {}
 extension PopguideSDK.LevelServer.LevelType : Swift.Hashable {}
 extension PopguideSDK.LevelServer.LevelType : Swift.RawRepresentable {}
+extension PopguideSDK.LevelServer.ListType : Swift.Equatable {}
+extension PopguideSDK.LevelServer.ListType : Swift.Hashable {}
+extension PopguideSDK.LevelServer.ListType : Swift.RawRepresentable {}
+extension PopguideSDK.LinkServer.LinkType : Swift.Equatable {}
+extension PopguideSDK.LinkServer.LinkType : Swift.Hashable {}
+extension PopguideSDK.LinkServer.LinkType : Swift.RawRepresentable {}
 extension PopguideSDK.PointServer.PointType : Swift.Equatable {}
 extension PopguideSDK.PointServer.PointType : Swift.Hashable {}
 extension PopguideSDK.PointServer.PointType : Swift.RawRepresentable {}
@@ -861,3 +1801,6 @@ extension PopguideSDK.PointServer.ShowNum : Swift.RawRepresentable {}
 extension PopguideSDK.PointServer.PoiType : Swift.Equatable {}
 extension PopguideSDK.PointServer.PoiType : Swift.Hashable {}
 extension PopguideSDK.PointServer.PoiType : Swift.RawRepresentable {}
+extension PopguideSDK.UnityPointType : Swift.Equatable {}
+extension PopguideSDK.UnityPointType : Swift.Hashable {}
+extension PopguideSDK.UnityPointType : Swift.RawRepresentable {}

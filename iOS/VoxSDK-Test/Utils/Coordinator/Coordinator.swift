@@ -127,8 +127,8 @@ final class Coordinator: ObservableObject {
     switch page.type {
     case .home:
       ContentView()
-    case let .mapDetail(popMap, languageId):
-      PopMapDetailView(popMap: popMap, languageId: languageId)
+    case let .mapDetail(popMap, languageId, loginResponse):
+      PopMapDetailView(popMap: popMap, languageId: languageId, loginResponse: loginResponse)
     }
   }
 }

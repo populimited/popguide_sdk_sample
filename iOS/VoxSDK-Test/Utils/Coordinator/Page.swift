@@ -9,7 +9,7 @@ import SwiftUI
 struct Page: Hashable, Identifiable {
   enum PageType: Equatable {
     case home
-    case mapDetail(popMap: PopMapModel, languageId: Int)
+    case mapDetail(popMap: PopMapModel, languageId: Int, loginResponse: ApiResponseLogin?)
     
     var id: String {
       String(reflecting: self)
