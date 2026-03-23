@@ -28,7 +28,7 @@ The sample app follows a linear flow that covers all the key SDK features:
 `PopguideManager` is initialized with an app name, language, and environment:
 
 ```swift
-PopguideManager(appName: "popguide", language: .english, environment: .production)
+PopguideManager(appName: "sdk_sample", language: .english, environment: .production)
 ```
 
 ### 2. Login
