@@ -52,37 +52,39 @@ struct PopMapCard: View {
               .font(.caption)
               .foregroundStyle(.secondary)
 
-            HStack(spacing: 12) {
-              ForEach(packages.indices, id: \.self) { index in
-                let pack = packages[index]
-                if let flagUrl = pack.languageFlag, let langId = pack.languageId {
-                  NavigationLink {
-                    PopMapDetailView(
-                      popMap: popMap,
-                      languageId: langId,
-                      loginResponse: loginResponse
-                    )
-                  } label: {
-                    VStack(spacing: 4) {
-                      LazyImage(url: URL(string: flagUrl)) { state in
-                        if let image = state.image {
-                          image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.15), radius: 2)
-                        } else {
-                          Circle()
-                            .fill(.quaternary)
-                            .frame(width: 32, height: 32)
+            ScrollView(.horizontal, showsIndicators: false) {
+              HStack(spacing: 8) {
+                ForEach(packages.indices, id: \.self) { index in
+                  let pack = packages[index]
+                  if let flagUrl = pack.languageFlag, let langId = pack.languageId {
+                    NavigationLink {
+                      PopMapDetailView(
+                        popMap: popMap,
+                        languageId: langId,
+                        loginResponse: loginResponse
+                      )
+                    } label: {
+                      VStack(spacing: 4) {
+                        LazyImage(url: URL(string: flagUrl)) { state in
+                          if let image = state.image {
+                            image
+                              .resizable()
+                              .scaledToFill()
+                              .frame(width: 32, height: 32)
+                              .clipShape(Circle())
+                              .shadow(color: .black.opacity(0.15), radius: 2)
+                          } else {
+                            Circle()
+                              .fill(.quaternary)
+                              .frame(width: 32, height: 32)
+                          }
                         }
-                      }
-
-                      if let name = pack.languageName {
-                        Text(name)
-                          .font(.caption2)
-                          .foregroundStyle(.secondary)
+                        
+                        if let name = pack.languageName {
+                          Text(name)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        }
                       }
                     }
                   }
