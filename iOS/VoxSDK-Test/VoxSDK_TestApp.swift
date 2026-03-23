@@ -25,7 +25,7 @@ import SwiftUI
 @main
 struct VoxSDK_TestApp: App {
   @StateObject private var popguideManager = PopguideManager(
-    appName: "popguide",
+    appName: "sdk_sample",
     language: .english,
     environment: .production
   )
