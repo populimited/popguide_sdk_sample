@@ -140,7 +140,7 @@ Two download modes are available:
 - `.full` — downloads all resources (images + audio + video).
 - `.light` — downloads images only.
 
-Files are stored in `Documents/{mapUID}/` (or `Documents/{mapUID}_{accountUID}/` when using account scoping). Max 6 concurrent file downloads.
+Files are stored in `Documents/{mapUID}/` when using account scoping). Max 6 concurrent file downloads.
 
 ### 6. Offline Verification
 
@@ -150,7 +150,7 @@ Files are stored in `Documents/{mapUID}/` (or `Documents/{mapUID}_{accountUID}/`
 
 ### 7. Manage
 
-- `cancelDownload(of:deleteFiles:)` — stops an active download. By default (`deleteFiles: true`) removes files already downloaded. Pass `deleteFiles: false` to preserve them.
+- `cancelDownload(of mapDetail:)` — stops an active download. By default (`deleteFiles: true`) removes files already downloaded. 
 - `deletePopMap(_:)` — removes all downloaded assets for the tour (operates at the full map level).
 
 ## File Storage
@@ -159,7 +159,7 @@ Downloaded assets are stored in the app's `Documents` directory, organized by ma
 
 ```
 Documents/
-└── {mapUID}_{accountUID}/
+└── {mapUID}/
     ├── image_001.jpg
     ├── image_002.jpg
     ├── audio_en_001.mp3
@@ -169,7 +169,6 @@ Documents/
 ```
 
 - Files are saved flat (no subdirectories), using the filename extracted from the remote URL.
-- When using account scoping, the folder name is `{mapUID}_{accountUID}`. Without account scoping, it is `{mapUID}`.
 - `localFile(mapDetailUID:)` resolves local files by matching the filename (`lastPathComponent`) inside the map folder.
 - `deletePopMap(_:)` removes the entire map folder and all its contents.
 - The SDK does not set `isExcludedFromBackup` on downloaded files. If needed, the integrating app should handle iCloud backup exclusion.
@@ -181,8 +180,8 @@ The SDK downloads assets at the map level (`.full` or `.light`). To download onl
 1. Call `fetchPopMapDetails(body:id:languageId:forceUpdate:accountId:)` to load the tour metadata.
 2. Navigate `details.levels[].points[].contents.audios` to find the `AudioServer` entries you need.
 3. Use the `file` property of each `AudioServer` as the remote URL to download the file independently.
-4. Save the file in `Documents/{mapUID}_{accountUID}/` using the last path component of the URL as the filename.
-5. `localFile(mapDetailUID:accountUID:)` will then find the file automatically.
+4. Save the file in `Documents/{mapUID}/` using the last path component of the URL as the filename.
+5. `localFile(mapDetailUID:)` will then find the file automatically.
 
 Optionally, download the `.light` package first to get all images, and then add only the required audio files manually.
 
