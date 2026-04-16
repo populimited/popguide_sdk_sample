@@ -49,8 +49,8 @@ The sample app follows a linear flow that covers all the key SDK features.
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│  3. COLLECTIONS                                                     │
-│  fetchPopMapCollections(collectionsUrl:languageId:)                  │
+│  3. COLLECTIONS  (OPTIONAL)                                         │
+│  fetchPopMapCollections(collectionsUrl:languageId:)                 │
 │  └─ PopMapCollectionDTO[] → match to PopMapModel via uid/id         │
 └──────────────────────────┬──────────────────────────────────────────┘
                            │
@@ -91,9 +91,7 @@ The sample app follows a linear flow that covers all the key SDK features.
                            ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  7. MANAGE                                                          │
-│  ├─ cancelDownload(of:deleteFiles:) → stop download                 │
-│  │   deleteFiles: true (default) = removes downloaded files         │
-│  │   deleteFiles: false = preserves files already on disk           │
+│  ├─ cancelDownload(of:) → stop download and removes downloaded files│
 │  └─ deletePopMap(_:) → removes all downloaded assets (full map)     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -184,8 +182,6 @@ The SDK downloads assets at the map level (`.full` or `.light`). To download onl
 5. `localFile(mapDetailUID:)` will then find the file automatically.
 
 Optionally, download the `.light` package first to get all images, and then add only the required audio files manually.
-
-> **Note:** Files downloaded outside the SDK are still subject to `deletePopMap(_:)`, which removes the entire map folder.
 
 ## Project Structure
 
