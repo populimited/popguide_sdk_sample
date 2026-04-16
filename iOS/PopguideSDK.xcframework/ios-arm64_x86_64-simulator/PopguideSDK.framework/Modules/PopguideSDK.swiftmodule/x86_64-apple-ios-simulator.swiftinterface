@@ -20,7 +20,11 @@ public protocol URLConvertible {
 }
 extension PopguideSDK.LocalFileCheckable {
   #if compiler(>=5.3) && $NonescapableTypes
+  @available(*, deprecated, renamed: "localFile(localFile:accountUID:)", message: "use also accountUID")
   public func localFile(mapDetailUID: Swift.String) -> Foundation.URL?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func localFile(mapDetailUID: Swift.String, accountUID: Swift.String) -> Foundation.URL?
   #endif
   #if compiler(>=5.3) && $NonescapableTypes
   public func localURL() -> Foundation.URL?
@@ -45,7 +49,20 @@ extension PopguideSDK.URLConvertible where Self : PopguideSDK.LocalFileCheckable
 }
 extension PopguideSDK.PopMapDetailsServer {
   #if compiler(>=5.3) && $NonescapableTypes
+  @available(*, deprecated, renamed: "getDownloadablesFolder(accountUID:)", message: "use also accountUID")
+  public var downlodablesFolder: Swift.String? {
+    get
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func getDownloadablesFolder(accountUID: Swift.String?) -> Swift.String?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @available(*, deprecated, renamed: "localFile(localFile:accountUID:)", message: "use also accountUID")
   public func localFile(localFile: any PopguideSDK.LocalFileCheckable) -> Foundation.URL?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  public func localFile(localFile: any PopguideSDK.LocalFileCheckable, accountUID: Swift.String?) -> Foundation.URL?
   #endif
 }
 public typealias PopguideAccount = PopguideSDK.ApiResponseLogin

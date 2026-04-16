@@ -142,6 +142,53 @@
             "moduleName": "PopguideSDK",
             "genericSig": "<τ_0_0 where τ_0_0 : PopguideSDK.LocalFileCheckable>",
             "sugared_genericSig": "<Self where Self : PopguideSDK.LocalFileCheckable>",
+            "deprecated": true,
+            "declAttributes": [
+              "AccessControl",
+              "Available",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "localFile",
+            "printedName": "localFile(mapDetailUID:accountUID:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Foundation.URL?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "URL",
+                    "printedName": "Foundation.URL",
+                    "usr": "s:10Foundation3URLV"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11PopguideSDK18LocalFileCheckablePAAE05localD012mapDetailUID07accountI010Foundation3URLVSgSS_SStF",
+            "mangledName": "$s11PopguideSDK18LocalFileCheckablePAAE05localD012mapDetailUID07accountI010Foundation3URLVSgSS_SStF",
+            "moduleName": "PopguideSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : PopguideSDK.LocalFileCheckable>",
+            "sugared_genericSig": "<Self where Self : PopguideSDK.LocalFileCheckable>",
             "declAttributes": [
               "AccessControl",
               "RawDocComment"
@@ -52365,6 +52412,106 @@
             "funcSelfKind": "NonMutating"
           },
           {
+            "kind": "Var",
+            "name": "downlodablesFolder",
+            "printedName": "downlodablesFolder",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11PopguideSDK19PopMapDetailsServerV18downlodablesFolderSSSgvp",
+            "mangledName": "$s11PopguideSDK19PopMapDetailsServerV18downlodablesFolderSSSgvp",
+            "moduleName": "PopguideSDK",
+            "deprecated": true,
+            "declAttributes": [
+              "Available"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11PopguideSDK19PopMapDetailsServerV18downlodablesFolderSSSgvg",
+                "mangledName": "$s11PopguideSDK19PopMapDetailsServerV18downlodablesFolderSSSgvg",
+                "moduleName": "PopguideSDK",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "getDownloadablesFolder",
+            "printedName": "getDownloadablesFolder(accountUID:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11PopguideSDK19PopMapDetailsServerV22getDownloadablesFolder10accountUIDSSSgAF_tF",
+            "mangledName": "$s11PopguideSDK19PopMapDetailsServerV22getDownloadablesFolder10accountUIDSSSgAF_tF",
+            "moduleName": "PopguideSDK",
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
             "kind": "Function",
             "name": "localFile",
             "printedName": "localFile(localFile:)",
@@ -52394,9 +52541,58 @@
             "usr": "s:11PopguideSDK19PopMapDetailsServerV9localFileAD10Foundation3URLVSgAA05LocalH9Checkable_p_tF",
             "mangledName": "$s11PopguideSDK19PopMapDetailsServerV9localFileAD10Foundation3URLVSgAA05LocalH9Checkable_p_tF",
             "moduleName": "PopguideSDK",
+            "deprecated": true,
             "declAttributes": [
+              "Available",
               "RawDocComment"
             ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "localFile",
+            "printedName": "localFile(localFile:accountUID:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Foundation.URL?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "URL",
+                    "printedName": "Foundation.URL",
+                    "usr": "s:10Foundation3URLV"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "LocalFileCheckable",
+                "printedName": "any PopguideSDK.LocalFileCheckable",
+                "usr": "s:11PopguideSDK18LocalFileCheckableP"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11PopguideSDK19PopMapDetailsServerV9localFileAD10accountUID10Foundation3URLVSgAA05LocalH9Checkable_p_SSSgtF",
+            "mangledName": "$s11PopguideSDK19PopMapDetailsServerV9localFileAD10accountUID10Foundation3URLVSgAA05LocalH9Checkable_p_SSSgtF",
+            "moduleName": "PopguideSDK",
             "isFromExtension": true,
             "funcSelfKind": "NonMutating"
           }
@@ -73752,56 +73948,63 @@
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopguideManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 11815,
+      "offset": 11833,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "StringLiteral",
-      "offset": 588,
+      "offset": 445,
       "length": 27,
       "value": "\"https:\/\/maps.popguide.app\""
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 633,
+      "offset": 490,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "Array",
-      "offset": 953,
+      "offset": 659,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "Array",
-      "offset": 1049,
+      "offset": 716,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "Array",
-      "offset": 1245,
+      "offset": 826,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1371,
+      "offset": 921,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
+      "kind": "BooleanLiteral",
+      "offset": 2123,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/PopmapDownload\/DownloadManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 4062,
+      "offset": 2942,
       "length": 1,
       "value": "1"
     },
@@ -74095,44 +74298,51 @@
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 4434,
+      "offset": 4797,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 5091,
+      "offset": 5454,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 5747,
+      "offset": 6110,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 6309,
+      "offset": 6672,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 6833,
+      "offset": 7196,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
       "kind": "BooleanLiteral",
-      "offset": 7380,
+      "offset": 7743,
       "length": 5,
       "value": "false"
+    },
+    {
+      "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguideManager+.swift",
+      "kind": "BooleanLiteral",
+      "offset": 9964,
+      "length": 4,
+      "value": "true"
     },
     {
       "filePath": "\/Users\/alexpetrarca\/Documents\/Vox\/popguide-sdk-ios\/VoxSDK\/Sources\/PopguideSDK\/VoxNetwork\/API\/PopguidePublic\/VoxNetworkApi.swift",

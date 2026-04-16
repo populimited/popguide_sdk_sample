@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; };
-		645D0B672F715CE00021DF5D /* PopguideSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		645D0B7D2F7167D10021DF5D /* PopMapCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645D0B7C2F7167D10021DF5D /* PopMapCard.swift */; };
+		64FFE2FE2F90D0C800F9D092 /* PopguideSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FFE2FD2F90D0C800F9D092 /* PopguideSDK.xcframework */; };
+		64FFE2FF2F90D0C800F9D092 /* PopguideSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 64FFE2FD2F90D0C800F9D092 /* PopguideSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B94931FB2B68F3E900F0598F /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FA2B68F3E900F0598F /* Nuke */; };
 		B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FC2B68F3E900F0598F /* NukeExtensions */; };
 		B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = B94931FE2B68F3E900F0598F /* NukeUI */; };
@@ -22,13 +22,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		B9587B6F2BBD475D00996DF6 /* Embed Frameworks */ = {
+		64FFE3002F90D0C800F9D092 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				645D0B672F715CE00021DF5D /* PopguideSDK.xcframework in Embed Frameworks */,
+				64FFE2FF2F90D0C800F9D092 /* PopguideSDK.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -36,8 +36,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PopguideSDK.xcframework; path = frameworks/PopguideSDK.xcframework; sourceTree = "<group>"; };
 		645D0B7C2F7167D10021DF5D /* PopMapCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMapCard.swift; sourceTree = "<group>"; };
+		64FFE2FD2F90D0C800F9D092 /* PopguideSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = PopguideSDK.xcframework; sourceTree = "<group>"; };
 		B989E4312B6958900059B050 /* PopMapDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMapDetailView.swift; sourceTree = "<group>"; };
 		B9F3BE7B2B22214400F6AC2D /* VoxSDK-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VoxSDK-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9F3BE7E2B22214400F6AC2D /* VoxSDK_TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxSDK_TestApp.swift; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 				B94931FB2B68F3E900F0598F /* Nuke in Frameworks */,
 				B94932012B68F3E900F0598F /* NukeVideo in Frameworks */,
 				B94931FD2B68F3E900F0598F /* NukeExtensions in Frameworks */,
-				645D0B662F715CE00021DF5D /* PopguideSDK.xcframework in Frameworks */,
+				64FFE2FE2F90D0C800F9D092 /* PopguideSDK.xcframework in Frameworks */,
 				B94931FF2B68F3E900F0598F /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,7 +75,7 @@
 		B9B665082B2221850003FA9C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				645D0B642F715CCA0021DF5D /* PopguideSDK.xcframework */,
+				64FFE2FD2F90D0C800F9D092 /* PopguideSDK.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -126,7 +126,7 @@
 				B9F3BE772B22214400F6AC2D /* Sources */,
 				B9F3BE782B22214400F6AC2D /* Frameworks */,
 				B9F3BE792B22214400F6AC2D /* Resources */,
-				B9587B6F2BBD475D00996DF6 /* Embed Frameworks */,
+				64FFE3002F90D0C800F9D092 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

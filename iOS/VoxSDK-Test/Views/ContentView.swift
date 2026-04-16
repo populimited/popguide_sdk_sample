@@ -40,8 +40,8 @@ struct ContentView: View {
   @State private var isLoading = false
   @State private var errorMessage: String?
 
-  private let username = "POP-001600"
-  private let password = "93043"
+  private let username = "POP-STFBUQ"
+  private let password = "76695"
 
   /// The full tour models returned by login, used to match collection items.
   private var maps: [PopMapModel] {
@@ -241,7 +241,7 @@ struct ContentView: View {
     ContentView()
       .environmentObject(
         PopguideManager(
-          appName: "sdk_sample",
+          appName: "popguide",
           language: .english,
           environment: .production
         )
