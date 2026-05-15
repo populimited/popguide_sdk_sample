@@ -19,6 +19,39 @@ This sample app demonstrates the end-to-end integration of the PopguideSDK frame
 
 ## How to import the SDK
 
+### Swift Package Manager
+
+The recommended integration method is Swift Package Manager.
+
+In Xcode:
+
+1. Open **File** > **Add Package Dependencies...**.
+2. Enter the repository URL:
+
+```text
+https://github.com/populimited/popguide_sdk_sample.git
+```
+
+3. Select the desired version, starting from `1.1.0`.
+4. Add the `PopguideSDK` product to your app target.
+
+If you manage dependencies directly from `Package.swift`, add:
+
+```swift
+.package(
+    url: "https://github.com/populimited/popguide_sdk_sample.git",
+    from: "1.1.0"
+)
+```
+
+Then add `PopguideSDK` to the target dependencies:
+
+```swift
+.product(name: "PopguideSDK", package: "popguide_sdk_sample")
+```
+
+### Manual XCFramework Integration
+
 1. Open your project in Xcode.
 2. Select the target where you want to include the framework.
 3. Go to **General** > **Frameworks, Libraries, and Embedded Content**.
