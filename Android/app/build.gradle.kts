@@ -51,7 +51,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.vox.populi)
+    implementation(libs.populi.sdk)
+
 
     implementation(platform(libs.compose.bom))
     implementation(libs.coil.compose)

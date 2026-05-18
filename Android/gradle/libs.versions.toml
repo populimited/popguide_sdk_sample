@@ -8,12 +8,9 @@ activity-compose = "1.10.0"
 compose-bom = "2025.01.01"
 compose-compiler = "1.5.9"
 coil = "2.7.0"
-
-sdk = "4.0.0.1774009034609"
+populi-sdk = "4.0.1"
 
 [libraries]
-
-vox-populi = { module = "com.vox.populi:sdk", version.ref = "sdk" }
 
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
@@ -24,6 +21,7 @@ compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+populi-sdk = { module = "io.github.populimited:sdk", version.ref = "populi-sdk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
